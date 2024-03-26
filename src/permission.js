@@ -1,4 +1,4 @@
-import router, { resetRouter } from './router'
+import router from './router'
 import store from './store'
 import storage from 'store'
 import NProgress from 'nprogress' // progress bar
@@ -7,35 +7,45 @@ import notification from 'ant-design-vue/es/notification'
 import { setDocumentTitle, domTitle } from '@/utils/domUtil'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { i18nRender } from '@/locales'
+import { createRouter } from '@/config/router.config'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const allowList = ['login', 'register', 'registerResult'] // no redirect allowList
 const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
+const defaultRoutePath = '/dashboard/Workplace'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
+
+  console.log("路由代码从这里开始执行：")
+  console.log("看看to",to)
+  console.log("看看from",from)
+
   to.meta && typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`)
-  /* has token */
+  
   const token = storage.get(ACCESS_TOKEN)
   if (token) {
+    console.log("存在token", token)
     if (to.path === loginRoutePath) {
       next({ path: defaultRoutePath })
       NProgress.done()
-    } else {
+    } 
+    else {
       // check login user.roles is null
-      if (store.getters.roles.length === 0) {
-        // request login userInfo
+      console.log("那我看看store.getters.roles是什么", store.getters.roles)
+      if (!store.getters.roles||store.getters.roles.length === 0) {
+        // request userInfo
         store
           .dispatch('GetInfo')
           .then(res => {
-            console.log('res', res)
-            // 根据用户权限信息生成可访问的路由表
-            store.dispatch('GenerateRoutes', { token, ...res }).then(() => {
+            console.log('getInfo还在啊，看看返回值', res)
+            const roles = res.result && res.result.role
+            // generate dynamic router
+            store.dispatch('GenerateRoutes', { roles }).then(() => {
+              // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               // VueRouter@3.5.0+ New API
-              resetRouter() // 重置路由 防止退出重新登录或者 token 过期后页面未刷新，导致的路由重复添加
               store.getters.addRouters.forEach(r => {
                 router.addRoute(r)
               })
@@ -43,8 +53,13 @@ router.beforeEach((to, from, next) => {
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
                 // set the replace: true so the navigation will not leave a history record
+                console.log(redirect)
+                console.log(to)
                 next({ ...to, replace: true })
-              } else {
+                // next({ path: '/' })
+              } 
+              else {
+                console.log("直接跳转到目标")
                 // 跳转到目的路由
                 next({ path: redirect })
               }
@@ -60,15 +75,20 @@ router.beforeEach((to, from, next) => {
               next({ path: loginRoutePath, query: { redirect: to.fullPath } })
             })
           })
-      } else {
+      } 
+      else {
         next()
       }
     }
-  } else {
+  } 
+  else {
+    console.log("不存在token")
     if (allowList.includes(to.name)) {
-      // 在免登录名单，直接进入
+      // 页面在免登录名单，直接进入
       next()
-    } else {
+    } 
+    else {
+      console.log("否则准备进入登录页，把你要进的页面给到redirect参数中")
       next({ path: loginRoutePath, query: { redirect: to.fullPath } })
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
@@ -76,5 +96,6 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
+  console.log("路由代码执行完毕")
   NProgress.done() // finish progress bar
 })

@@ -7,6 +7,10 @@ const RouteView = {
   render: h => h('router-view')
 }
 
+
+/**
+ * 加入动态路由之后，被废弃原静态路由
+ */
 export const asyncRouterMap = [
   {
     path: '/',

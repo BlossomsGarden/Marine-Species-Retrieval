@@ -6,10 +6,13 @@ import { VueAxios } from './axios'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 // 创建 axios 实例
+axios.defaults.withCredentials = true
 const request = axios.create({
   // API 请求的默认前缀
-  baseURL: process.env.VUE_APP_API_BASE_URL,
-  timeout: 6000 // 请求超时时间
+  baseURL: process.env.VUE_APP_API_FULL_URL,
+  // baseURL:'http://localhost:1290/',
+  timeout: 6000, // 请求超时时间
+  withCredentials: true
 })
 
 // 异常拦截处理器

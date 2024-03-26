@@ -16,13 +16,15 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes ({ commit }, data) {
+    GenerateRoutes ({ commit }) {
       return new Promise((resolve, reject) => {
-        const { token } = data
-        generatorDynamicRouter(token).then(routers => {
+        console.log("看看你的")
+        generatorDynamicRouter()
+        .then(routers => {
           commit('SET_ROUTERS', routers)
           resolve()
-        }).catch(e => {
+        })
+        .catch(e => {
           reject(e)
         })
       })

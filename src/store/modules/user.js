@@ -38,12 +38,14 @@ const user = {
     // 登录
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        login(userInfo).then(response => {
+        adminLogin(userInfo).then(response => {
+          console.log("我很好")
           const result = response.result
           storage.set(ACCESS_TOKEN, result.token, new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
           commit('SET_TOKEN', result.token)
           resolve()
         }).catch(error => {
+          console.log("我很好啊？")
           reject(error)
         })
       })
@@ -52,6 +54,7 @@ const user = {
     // 获取用户信息
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
+
         // 请求后端获取用户信息 /api/user/info
         getInfo().then(response => {
           const { result } = response

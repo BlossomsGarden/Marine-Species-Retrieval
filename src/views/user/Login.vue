@@ -118,7 +118,13 @@ import md5 from 'md5'
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getSmsCaptcha, get2step } from '@/api/login'
+import { getSmsCaptcha, get2step, adminLogin } from '@/api/login'
+import storage from 'store'
+import store from '@/store'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
+import router from '@/router'
+import { constantRouterMap } from '@/config/router.config'
+import Router from 'vue-router'
 
 export default {
   components: {
@@ -185,18 +191,69 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
           const loginParams = { ...values }
-          delete loginParams.username
-          loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = md5(values.password)
-          Login(loginParams)
-            .then((res) => this.loginSuccess(res))
-            .catch(err => this.requestFailed(err))
-            .finally(() => {
-              state.loginBtn = false
+          loginParams[!state.loginType ? 'email' : 'name'] = values.username
+          
+          adminLogin(loginParams)
+          .then((res) => {
+            if(res.success){
+              console.log("登录成功了",res.data.token)
+
+              storage.set(ACCESS_TOKEN, res.data.token, new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
+              
+              console.log(this.$route.query.redirect)
+
+
+              store.dispatch('GenerateRoutes').then(() => {
+                // 根据roles权限生成可访问的路由表
+                // 动态添加可访问路由表
+                // VueRouter@3.5.0+ New API
+                store.getters.addRouters.forEach(r => {
+                  console.log("看看r",r)
+                  router.addRoute(r)
+                })
+                console.log("终于知道执行我了是吧")
+                // router.matcher = createRouter().matcher;
+                // router.options.routes = store.getters.addRouters
+                // router.addRoutes(store.getters.addRouters)
+                console.log("看看redirect",this.$route.query.redirect)
+                this.$router.push({ path: this.$route.query.redirect ? this.$route.query.redirect : '/' })
+
+                console.log("什么时候执行我")
+                console.log(this.$router)
+
+                // 延迟 1 秒显示欢迎信息
+                setTimeout(() => {
+                  this.$notification.success({
+                    message: '欢迎',
+                    description: `${timeFix()}，赶紧给👴干活！`
+                  })
+                }, 1000)
+                this.isLoginError = false
+              })
+            }
+            else{
+              this.$notification.error({
+                message: '出错了',
+                description: res.msg,
+                duration: 4
+              })
+            }
+          })
+          .catch((err) => {
+            this.isLoginError = true
+            console.log(err)
+            this.$notification.error({
+              message: '错误',
+              description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
+              duration: 4
             })
-        } else {
+          })
+          .finally(() => {
+            state.loginBtn = false
+          })
+        } 
+        else {
           setTimeout(() => {
             state.loginBtn = false
           }, 600)
@@ -246,37 +303,7 @@ export default {
         this.stepCaptchaVisible = false
       })
     },
-    loginSuccess (res) {
-      console.log(res)
-      // check res.homePage define, set $router.push name res.homePage
-      // Why not enter onComplete
-      /*
-      this.$router.push({ name: 'analysis' }, () => {
-        console.log('onComplete')
-        this.$notification.success({
-          message: '欢迎',
-          description: `${timeFix()}，欢迎回来`
-        })
-      })
-      */
-      this.$router.push({ path: '/' })
-      // 延迟 1 秒显示欢迎信息
-      setTimeout(() => {
-        this.$notification.success({
-          message: '欢迎',
-          description: `${timeFix()}，欢迎回来`
-        })
-      }, 1000)
-      this.isLoginError = false
-    },
-    requestFailed (err) {
-      this.isLoginError = true
-      this.$notification['error']({
-        message: '错误',
-        description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
-        duration: 4
-      })
-    }
+    
   }
 }
 </script>

@@ -1,36 +1,21 @@
 import request from '@/utils/request'
 
 const userApi = {
-  Login: '/auth/login',
   Logout: '/auth/logout',
   ForgePassword: '/auth/forge-password',
   Register: '/auth/register',
   twoStepCode: '/auth/2step-code',
   SendSms: '/account/sms',
   SendSmsErr: '/account/sms_err',
-  // get my info
   UserInfo: '/user/info',
-  UserMenu: '/user/nav'
+
+
+  AdminLogin: '/admin/login',
+  UserMenuPermission: '/admin/menu_permission'
 }
 
-/**
- * login func
- * parameter: {
- *     username: '',
- *     password: '',
- *     remember_me: true,
- *     captcha: '12345'
- * }
- * @param parameter
- * @returns {*}
- */
-export function login (parameter) {
-  return request({
-    url: userApi.Login,
-    method: 'post',
-    data: parameter
-  })
-}
+
+
 
 export function getSmsCaptcha (parameter) {
   return request({
@@ -47,13 +32,6 @@ export function getInfo () {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }
-  })
-}
-
-export function getCurrentUserNav () {
-  return request({
-    url: userApi.UserMenu,
-    method: 'get'
   })
 }
 
@@ -78,3 +56,30 @@ export function get2step (parameter) {
     data: parameter
   })
 }
+
+
+
+
+/**
+ * @returns 当前登录用户的目录可查看目录权限
+ */
+export function getCurrentUserMenuPermission () {
+  return request({
+    url: userApi.UserMenuPermission,
+    method: 'get'
+  })
+}
+
+
+export function adminLogin (param) {
+  console.log("正在登录")
+  return request({
+    url: userApi.AdminLogin,
+    method: 'post',
+    data: param,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
