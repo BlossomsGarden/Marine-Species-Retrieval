@@ -5,9 +5,9 @@
         <a-card :bordered="false">
           <div class="account-center-avatarHolder">
             <div class="avatar">
-              <img :src="avatar">
+              <img :src="avatarUrl">
             </div>
-            <div class="username">{{ nickname }}</div>
+            <div class="username">{{ name }}</div>
             <div class="bio">海纳百川，有容乃大</div>
           </div>
           <div class="account-center-detail">
@@ -98,8 +98,7 @@
 <script>
 import { PageView, RouteView } from '@/layouts'
 import { AppPage, ArticlePage, ProjectPage } from './page'
-
-import { mapGetters } from 'vuex'
+import { getInfo } from '@/api/login'
 
 export default {
   components: {
@@ -111,6 +110,9 @@ export default {
   },
   data () {
     return {
+      avatarUrl:'',
+      name:'',
+
       tags: ['很有想法的', '专注设计', '辣~', '大长腿', '川妹子', '海纳百川'],
 
       tagInputVisible: false,
@@ -136,8 +138,11 @@ export default {
       noTitleKey: 'app'
     }
   },
-  computed: {
-    ...mapGetters(['nickname', 'avatar'])
+  async created(){
+    const getInfoRes = await getInfo()
+    // console.log("看看用户信息的返回结果",getInfoRes.data)
+    this.name = getInfoRes.data.name
+    this.avatarUrl = getInfoRes.data.avatarUrl
   },
   mounted () {
     this.getTeams()

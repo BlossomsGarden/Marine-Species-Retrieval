@@ -12,7 +12,6 @@ export default {
   'user.login.mobile.verification-code.placeholder': 'Verification code',
   'user.login.remember-me': 'Remember me',
   'user.login.forgot-password': 'Forgot your password?',
-  'user.login.sign-in-with': 'Sign in with',
   'user.login.signup': 'Sign up',
   'user.login.login': 'Login',
   'user.register.register': 'Register',

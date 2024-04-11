@@ -1,17 +1,20 @@
 import request from '@/utils/request'
 
 const userApi = {
-  Logout: '/auth/logout',
   ForgePassword: '/auth/forge-password',
   Register: '/auth/register',
-  twoStepCode: '/auth/2step-code',
   SendSms: '/account/sms',
-  SendSmsErr: '/account/sms_err',
-  UserInfo: '/user/info',
 
 
+  GetInfo: '/getInfo',
+  EditInfo:'/editInfo',
+  UserMenuPermission: '/menu_permission',
+  Logout: '/logout',
+
+  GetAdminInfo: '/admin/getInfo',
   AdminLogin: '/admin/login',
-  UserMenuPermission: '/admin/menu_permission'
+  GetUserInfo: '/user/getInfo',
+  UserLogin: '/user/login',
 }
 
 
@@ -25,25 +28,30 @@ export function getSmsCaptcha (parameter) {
   })
 }
 
+/**
+ * 获取使用者信息
+ */
 export function getInfo () {
   return request({
-    url: userApi.UserInfo,
+    url: userApi.GetInfo,
     method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
   })
 }
 
-export function logout () {
+/**
+ * 修改使用者信息
+ */
+export function editInfo (param) {
   return request({
-    url: userApi.Logout,
+    url: userApi.EditInfo,
     method: 'post',
+    data: param,
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+      'Content-Type': 'application/json',
+    },
   })
 }
+
 
 /**
  * get user 2step code open?
@@ -70,7 +78,20 @@ export function getCurrentUserMenuPermission () {
   })
 }
 
+/**
+ * 当前使用者登出
+ */
+export function logout () {
+  return request({
+    url: userApi.Logout,
+    method: 'post',
+  })
+}
 
+
+/**
+ * 管理员登录
+ */
 export function adminLogin (param) {
   console.log("正在登录")
   return request({
@@ -80,6 +101,44 @@ export function adminLogin (param) {
     headers: {
       'Content-Type': 'application/json',
     },
+  })
+}
+
+/**
+ * 管理员获取信息
+ */
+export function getAdminInfo () {
+  return request({
+    url: userApi.GetAdminInfo,
+    method: 'get'
+  })
+}
+
+
+
+
+/**
+ * 用户登录
+ */
+export function userLogin (param) {
+  return request({
+    url: userApi.UserLogin,
+    method: 'post',
+    data: param,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+
+/**
+ * 用户获取信息
+ */
+export function getUserInfo () {
+  return request({
+    url: userApi.GetUserInfo,
+    method: 'get'
   })
 }
 

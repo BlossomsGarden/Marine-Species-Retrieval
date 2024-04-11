@@ -1,7 +1,7 @@
 <template>
   <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
     <span class="ant-pro-account-avatar">
-      <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
+      <a-avatar size="small" :src="currentUser.avatarUrl" class="antd-pro-global-header-index-avatar" />
       <span>{{ currentUser.name }}</span>
     </span>
     <template v-slot:overlay>
@@ -44,10 +44,10 @@ export default {
   },
   methods: {
     handleToCenter () {
-      this.$router.push({ path: '/account/center' })
+      this.$router.push({ path: '/account/AccountCenter' })
     },
     handleToSettings () {
-      this.$router.push({ path: '/account/settings' })
+      this.$router.push({ path: '/account/BasicSetting' })
     },
     handleLogout (e) {
       Modal.confirm({

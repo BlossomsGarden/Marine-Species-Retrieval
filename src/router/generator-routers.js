@@ -27,37 +27,39 @@ const constantRouterComponents = {
   StepForm: () => import('@/views/form/stepForm/StepForm'),
   AdvanceForm: () => import('@/views/form/advancedForm/AdvancedForm'),
 
-  // // list
-  // TableList: () => import('@/views/list/TableList'),
-  // StandardList: () => import('@/views/list/BasicList'),
-  // CardList: () => import('@/views/list/CardList'),
-  // SearchLayout: () => import('@/views/list/search/SearchLayout'),
-  // SearchArticles: () => import('@/views/list/search/Article'),
-  // SearchProjects: () => import('@/views/list/search/Projects'),
-  // SearchApplications: () => import('@/views/list/search/Applications'),
-  // ProfileBasic: () => import('@/views/profile/basic'),
-  // ProfileAdvanced: () => import('@/views/profile/advanced/Advanced'),
+  // list
+  TableList: () => import('@/views/list/TableList'),
+  BasicList: () => import('@/views/list/BasicList'),
+  CardList: () => import('@/views/list/CardList'),
+  SearchLayout: () => import('@/views/list/search/SearchLayout'),
+  SearchArticles: () => import('@/views/list/search/Article'),
+  SearchProjects: () => import('@/views/list/search/Projects'),
+  SearchApplications: () => import('@/views/list/search/Applications'),
 
-  // // result
-  // ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
-  // ResultFail: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
 
-  // // exception
-  // Exception403: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
-  // Exception404: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
-  // Exception500: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
+  // profile
+  ProfileBasic: () => import('@/views/profile/basic'),
+  ProfileAdvanced: () => import('@/views/profile/advanced/Advanced'),
 
-  // // account
-  // AccountCenter: () => import('@/views/account/center'),
-  // AccountSettings: () => import('@/views/account/settings/Index'),
-  // BasicSetting: () => import('@/views/account/settings/BasicSetting'),
-  // SecuritySettings: () => import('@/views/account/settings/Security'),
-  // CustomSettings: () => import('@/views/account/settings/Custom'),
-  // BindingSettings: () => import('@/views/account/settings/Binding'),
-  // NotificationSettings: () => import('@/views/account/settings/Notification')
+
+  // result
+  ResultSuccess: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
+  ResultFail: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
+
+
+  // exception
+  Exception403: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
+  Exception404: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
+  Exception500: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
+
+
+  // account
+  AccountCenter: () => import('@/views/account/center'),
+  BasicSetting: () => import('@/views/account/settings/BasicSetting'),
 
   // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
 }
+
 
 // 总目录记录
 const wholeMenuInfo=[
@@ -66,7 +68,7 @@ const wholeMenuInfo=[
     'name': 'dashBoard',
     'parentId': 0,
     'id': 1,
-    'meta': { 'title': 'Dashboard', 'icon': dashboard,'hideChildren': false },
+    'meta': { 'title': 'Dashboard', 'icon': 'dashboard','hideChildren': false },
     'component': 'RouteView',
     'redirect': '/dashboard/Workplace'
   },
@@ -84,6 +86,7 @@ const wholeMenuInfo=[
     meta: { title: 'Workplace', show:true },
     component:'Workplace'
   },
+
 
   //第二个一级目录form
   {
@@ -114,6 +117,154 @@ const wholeMenuInfo=[
     meta: { title: 'AdvancedForm', show:true },
     component:'AdvancedForm'
   },
+  
+
+
+  //第三个一级目录list
+  {
+    name: 'list',
+    'parentId': 0,
+    'id': 3,
+    component: 'RouteView',
+    redirect: '/list/table-list',
+    meta: { title: 'menu.list', icon: 'table', 'hideChildren': false },
+  },
+  // list包括4个子目录：SearchTable + BasicList + CardList + SearchList
+  {
+    name: 'TableList',
+    'parentId': 3,
+    'id': 31,
+    component: 'TableList',
+    meta: { title: 'menu.list.table-list'}
+  },
+  {
+    name: 'BasicList',
+    'parentId': 3,
+    'id': 32,
+    component: 'BasicList',
+    meta: { title: 'menu.list.basic-list' }
+  },
+  {
+    name: 'CardList',
+    'parentId': 3,
+    'id': 33,
+    component: 'CardList',
+    meta: { title: 'menu.list.card-list'}
+  },
+  {
+    name: 'SearchLayout',
+    'parentId': 3,
+    'id': 34,
+    component:'SearchLayout',
+    redirect: '/list/search/article',
+    meta: { title: 'menu.list.search-list'},
+  },
+  // SearchList还包括3个页内子目录
+  {
+    'parentId': 34,
+    'id': 341,
+    path: '/list/search/article',
+    name: 'SearchArticles',
+    component: 'SearchArticles',
+    meta: { title: 'menu.list.search-list.articles' }
+  },
+  {
+    'parentId': 34,
+    'id': 342,
+    path: '/list/search/project',
+    name: 'SearchProjects',
+    component: 'SearchProjects',
+    meta: { title: 'menu.list.search-list.projects' }
+  },
+  {
+    'parentId': 34,
+    'id': 343,
+    path: '/list/search/application',
+    name: 'SearchApplications',
+    component: 'SearchApplications',
+    meta: { title: 'menu.list.search-list.applications' }
+  },
+  
+
+
+  //第四个一级目录profile
+  {
+    name: 'profile',
+    'parentId': 0,
+    'id': 4,
+    component: 'RouteView',
+    meta: { title: 'menu.profile', icon: 'profile'},
+    redirect: '/profile/ProfileBasic',
+  },
+  // profile包括2个子目录：ProfileBasic + ProfileAdvanced
+  {
+    name: 'ProfileBasic',
+    'parentId': 4,
+    'id': 41,
+    component: 'ProfileBasic',
+    meta: { title: 'menu.profile.basic'}
+  },
+  {
+    name: 'ProfileAdvanced',
+    'parentId': 4,
+    'id': 42,
+    component: 'ProfileAdvanced',
+    meta: { title: 'menu.profile.advanced'}
+  },
+
+
+
+  // 第五个一级目录result
+  {
+    name: 'result',
+    'parentId': 0,
+    'id': 5,
+    component: 'RouteView',
+    redirect: '/result/ResultSuccess',
+    meta: { title: 'menu.result', icon: 'check-circle-o'}
+  },
+  // result包括2个子目录：ResultSuccess + ResultFail
+  {
+    name: 'ResultSuccess',
+    'parentId': 5,
+    'id': 51,
+    component: 'ResultSuccess',
+    meta: { title: 'menu.result.success', hiddenHeaderContent: true }
+  },
+  {
+    name: 'ResultFail',
+    'parentId': 5,
+    'id': 52,
+    component:'ResultFail',
+    meta: { title: 'menu.result.fail', hiddenHeaderContent: true }
+  },
+
+
+
+  //第六个一级目录account
+  {
+    'name': 'account',
+    'parentId': 0,
+    'id': 6,
+    'meta': { title: 'Account', icon: 'user','hideChildren': false },
+    'component': 'RouteView',
+    'redirect': '/account/AccountCenter',
+  },
+  // account包括2个子目录：AccountCenter + BasicSetting
+  {
+    name: 'AccountCenter',
+    parentId: 6,
+    id: 61,
+    meta: { title: 'menu.account.center', show:true},
+    component: 'AccountCenter',
+  },
+  {
+    name: 'BasicSetting',
+    parentId: 6,
+    id: 62,
+    meta: { title: 'BasicSetting', show:true},
+    component: 'BasicSetting',
+  }
 ]
 
 
@@ -153,33 +304,27 @@ export const generatorDynamicRouter = () => {
     const wholeMenuTree=[]
     // 获得总的目录树
     listToTree(wholeMenuInfo, wholeMenuTree, 0)
-    console.log("看看你的总的目录树是什么wholeMenuTree", wholeMenuTree)
+    console.log("总的目录树wholeMenuTree:", wholeMenuTree)
 
     loginService
       .getCurrentUserMenuPermission()
       .then(res => {
-        console.log('看看你的目录权限返回值res', res)
+        console.log('目录权限返回值:', res.data)
 
-        
         const menuHasPermission = wholeMenuTree.filter(item1 =>
           res.data.some(item2 => item2.routeId === item1.id)
         );
-        console.log('看看你有权限访问的目录都是什么menuHasPermission', menuHasPermission)
         rootRouter.children = menuHasPermission
 
         const menuNav = []
         menuNav.push(rootRouter)
-        console.log("看看menuNav",menuNav)
-        
         const routers = generator(menuNav)
         routers.push(notFoundRouter)
-
-        console.log('routers', routers)
         
         resolve(routers)
       })
       .catch(err => {
-        console.log("不知道你报了什么错",err)
+        console.log("不知道动态生成路由时报了什么错",err)
         reject(err)
       })
   })

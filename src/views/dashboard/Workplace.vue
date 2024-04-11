@@ -3,7 +3,7 @@
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar" />
+          <a-avatar size="large" :src="currentUser.avatarUrl" />
         </div>
         <div class="content">
           <div class="content-title">
@@ -138,6 +138,7 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { Radar } from '@/components'
 
 import { getRoleList, getServiceList } from '@/api/manage'
+import { getInfo } from '@/api/login'
 
 const DataSet = require('@antv/data-set')
 
@@ -150,7 +151,7 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      avatar: '',
+      avatarUrl: '',
       user: {},
 
       projects: [],
@@ -197,27 +198,23 @@ export default {
         { item: '热度', a: 60, b: 70, c: 40 },
         { item: '引用', a: 70, b: 50, c: 40 }
       ],
-      radarData: []
+      radarData: [],
+      currentUser:{}
     }
   },
   computed: {
     ...mapState({
-      nickname: state => state.user.nickname,
       welcome: state => state.user.welcome
     }),
-    currentUser () {
-      return {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
-      }
-    },
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
   },
-  created () {
-    this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
+  async created () {
+    const getInfoRes = await getInfo()
+    this.user = getInfoRes.data
+    this.avatarUrl = this.user.avatarUrl
+    this.currentUser = {
+      name: this.user.name,
+      avatarUrl: this.user.avatarUrl
+    }
 
     getRoleList().then(res => {
       // console.log('workplace -> call getRoleList()', res)

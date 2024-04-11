@@ -7,7 +7,12 @@
 
 <script>
 import AvatarDropdown from './AvatarDropdown'
+
+//你他妈这里引入不了这个,一引入就报错
+// import {getInfo} from '@/api/login.js'
+
 import SelectLang from '@/components/SelectLang'
+import storage from 'store'
 
 export default {
   name: 'RightContent',
@@ -47,12 +52,12 @@ export default {
       }
     }
   },
-  mounted () {
-    setTimeout(() => {
-      this.currentUser = {
-        name: 'Serati Ma'
-      }
-    }, 1500)
+
+  mounted(){
+    this.currentUser = {
+      name: storage.get('name'),
+      avatarUrl: storage.get('avatarUrl')
+    }
   }
 }
 </script>

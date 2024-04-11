@@ -7,7 +7,6 @@ import notification from 'ant-design-vue/es/notification'
 import { setDocumentTitle, domTitle } from '@/utils/domUtil'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { i18nRender } from '@/locales'
-import { createRouter } from '@/config/router.config'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -18,63 +17,51 @@ const defaultRoutePath = '/dashboard/Workplace'
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
 
-  console.log("路由代码从这里开始执行：")
-  console.log("看看to",to)
-  console.log("看看from",from)
+  // console.log("路由代码从这里开始执行：")
+  // console.log("看看to",to)
+  // console.log("看看from",from)
 
   to.meta && typeof to.meta.title !== 'undefined' && setDocumentTitle(`${i18nRender(to.meta.title)} - ${domTitle}`)
   
   const token = storage.get(ACCESS_TOKEN)
   if (token) {
-    console.log("存在token", token)
+    // console.log("存在token", token)
     if (to.path === loginRoutePath) {
       next({ path: defaultRoutePath })
       NProgress.done()
     } 
     else {
-      // check login user.roles is null
-      console.log("那我看看store.getters.roles是什么", store.getters.roles)
       if (!store.getters.roles||store.getters.roles.length === 0) {
-        // request userInfo
         store
-          .dispatch('GetInfo')
-          .then(res => {
-            console.log('getInfo还在啊，看看返回值', res)
-            const roles = res.result && res.result.role
-            // generate dynamic router
-            store.dispatch('GenerateRoutes', { roles }).then(() => {
-              // 根据roles权限生成可访问的路由表
-              // 动态添加可访问路由表
-              // VueRouter@3.5.0+ New API
-              store.getters.addRouters.forEach(r => {
-                router.addRoute(r)
-              })
-              // 请求带有 redirect 重定向时，登录自动重定向到该地址
-              const redirect = decodeURIComponent(from.query.redirect || to.path)
-              if (to.path === redirect) {
-                // set the replace: true so the navigation will not leave a history record
-                console.log(redirect)
-                console.log(to)
-                next({ ...to, replace: true })
-                // next({ path: '/' })
-              } 
-              else {
-                console.log("直接跳转到目标")
-                // 跳转到目的路由
-                next({ path: redirect })
-              }
+        .dispatch('GetInfo')
+        .then(res => {
+          // generate dynamic router
+          store.dispatch('GenerateRoutes', ).then(() => {
+            // 动态添加可访问路由表
+            store.getters.addRouters.forEach(r => {
+              router.addRoute(r)
             })
+            // 请求带有 redirect 重定向时，登录自动重定向到该地址
+            const redirect = decodeURIComponent(from.query.redirect || to.path)
+            if (to.path === redirect) {
+              next({ ...to, replace: true })
+            } 
+            else {
+              console.log("直接跳转到目标")
+              // 跳转到目的路由
+              next({ path: redirect })
+            }
           })
-          .catch(() => {
-            notification.error({
-              message: '错误',
-              description: '请求用户信息失败，请重试'
-            })
-            // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
-            store.dispatch('Logout').then(() => {
-              next({ path: loginRoutePath, query: { redirect: to.fullPath } })
-            })
+        })
+        .catch((err) => {
+          console.log("你究竟getInfo报了什么错",err)
+          notification.error({
+            message: '错误',
+            description: '请求用户信息失败，请重试'
           })
+          // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
+          store.dispatch('Logout').then(() => {next({ path: loginRoutePath })})
+        })
       } 
       else {
         next()
@@ -82,20 +69,20 @@ router.beforeEach((to, from, next) => {
     }
   } 
   else {
-    console.log("不存在token")
+    // console.log("不存在token")
     if (allowList.includes(to.name)) {
       // 页面在免登录名单，直接进入
       next()
     } 
     else {
-      console.log("否则准备进入登录页，把你要进的页面给到redirect参数中")
+      //不再免登录名单里,直接进入登录页，把你要进的页面给到redirect参数中
       next({ path: loginRoutePath, query: { redirect: to.fullPath } })
-      NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
+      NProgress.done()
     }
   }
 })
 
 router.afterEach(() => {
-  console.log("路由代码执行完毕")
+  // console.log("路由代码执行完毕")
   NProgress.done() // finish progress bar
 })
