@@ -3,66 +3,40 @@
     <a-row class="form-row" :gutter="16">
       <a-col :lg="6" :md="12" :sm="24">
         <a-form-item
-          label="任务名">
-          <a-input placeholder="请输入任务名称" v-decorator="[ 'name2', {rules: [{ required: true, message: '请输入任务名称', whitespace: true}]} ]" />
+          label="界">
+          <a-input placeholder="请输入物种归属界" v-decorator="[ 'kingdom', {rules: [{ required: true, message: '请输入物种归属界', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 7, offset: 1}" :lg="{span: 8}" :md="{span: 12}" :sm="24">
         <a-form-item
-          label="任务描述">
-          <a-input placeholder="请输入任务描述" v-decorator="[ 'url2', {rules: [{ required: true, message: '请输入任务描述', whitespace: true}]} ]" />
+          label="门">
+          <a-input placeholder="请输入物种归属门" v-decorator="[ 'phylum', {rules: [{ required: true, message: '请输入物种归属门', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 9, offset: 1}" :lg="{span: 10}" :md="{span: 24}" :sm="24">
         <a-form-item
-          label="执行人">
-          <a-select
-            placeholder="请选择执行人"
-            v-decorator="[
-              'owner2',
-              {rules: [{ required: true, message: '请选择执行人'}]}
-            ]" >
-            <a-select-option value="黄丽丽">黄丽丽</a-select-option>
-            <a-select-option value="李大刀">李大刀</a-select-option>
-          </a-select>
+          label="纲">
+          <a-input placeholder="请输入物种归属纲" v-decorator="[ 'class', {rules: [{ required: true, message: '请输入物种归属纲', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row class="form-row" :gutter="16">
       <a-col :lg="6" :md="12" :sm="24">
         <a-form-item
-          label="责任人">
-          <a-select
-            placeholder="请选择责任人"
-            v-decorator="[
-              'approver2',
-              {rules: [{ required: true, message: '请选择责任人'}]}
-            ]" >
-            <a-select-option value="王伟">王伟</a-select-option>
-            <a-select-option value="李红军">李红军</a-select-option>
-          </a-select>
+          label="目">
+          <a-input placeholder="请输入物种归属目" v-decorator="[ 'order', {rules: [{ required: true, message: '请输入物种归属目', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 7, offset: 1}" :lg="{span: 8}" :md="{span: 12}" :sm="24">
         <a-form-item
-          label="提醒时间">
-          <a-time-picker
-            style="width: 100%"
-            v-decorator="[
-              'dateRange2',
-              {rules: [{ required: true, message: '请选择提醒时间'}]}
-            ]" />
+          label="科">
+          <a-input placeholder="请输入物种归属科" v-decorator="[ 'family', {rules: [{ required: true, message: '请输入物种归属科', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 9, offset: 1}" :lg="{span: 10}" :md="{span: 24}" :sm="24">
         <a-form-item
-          label="任务类型">
-          <a-select
-            placeholder="请选择任务类型"
-            v-decorator="[ 'type2', {rules: [{ required: true, message: '请选择任务类型'}]} ]" >
-            <a-select-option value="定时执行">定时执行</a-select-option>
-            <a-select-option value="周期执行">周期执行</a-select-option>
-          </a-select>
+          label="属">
+          <a-input placeholder="请输入物种归属" v-decorator="[ 'genus', {rules: [{ required: true, message: '请输入物种归属', whitespace: true}]} ]" />
         </a-form-item>
       </a-col>
     </a-row>

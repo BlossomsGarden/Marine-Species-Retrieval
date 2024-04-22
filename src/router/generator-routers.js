@@ -18,9 +18,28 @@ const constantRouterComponents = {
   // Workplace: (resolve) => require([`@/views/dashboard/Workplace.vue`] ,resolve),
   // Analysis: (resolve) => require([`@/views/dashboard/Analysis.vue`] ,resolve)
 
-  // 你需要动态引入的页面组件
+  // dashBoard
   Workplace: () => import('@/views/dashboard/Workplace'),
   Analysis: () => import('@/views/dashboard/Analysis'),
+
+  // PlatformManagement
+  AccountManagement:()=>import('@/views/PlatformManagement/AccountManagement'),
+  ContentManagement:()=>import('@/views/PlatformManagement/ContentManagement'),
+
+  // UserActivity
+  ErrorReport:()=>import("@/views/UserActivity/ErrorReport"),
+  Feedback:()=>import("@/views/UserActivity/Feedback"),
+  NewSpeciesRequest:()=>import("@/views/UserActivity/NewSpeciesRequest"),
+
+  //Encyclopedia
+  BioDB:()=>import("@/views/Encyclopedia/BioDB"),
+  AttributeQuery:()=>import("@/views/Encyclopedia/AttributeQuery"),
+
+  //AddSpecies
+  AddSpecies:()=>import("@/views/AddSpecies/AddSpecies"),
+
+  //PostFeedback
+  PostFeedback:()=>import("@/views/PostFeedback/PostFeedback"),
 
   // form
   BasicForm: () => import('@/views/form/basicForm'),
@@ -111,11 +130,11 @@ const wholeMenuInfo=[
     meta: { title: 'StepForm', show:true },
     component:'StepForm'
   },{
-    name: 'AdvancedForm',
+    name: 'AdvanceForm',
     parentId: 2,
     id: 23,
-    meta: { title: 'AdvancedForm', show:true },
-    component:'AdvancedForm'
+    meta: { title: 'AdvanceForm', show:true },
+    component:'AdvanceForm'
   },
   
 
@@ -264,7 +283,113 @@ const wholeMenuInfo=[
     id: 62,
     meta: { title: 'BasicSetting', show:true},
     component: 'BasicSetting',
-  }
+  },
+
+
+
+  //第七个一级目录PlatformManagement
+  {
+    'name': 'PlatformManagement',
+    'parentId': 0,
+    'id': 7,
+    'meta': { title: '平台管理', icon: 'form','hideChildren': false },
+    'component': 'RouteView',
+    'redirect': '/PlatformManagement/AccountManagement',
+  },
+  // PlatformManagement包括2个子目录：AccountManagement + ContentManagement
+  {
+    name: 'AccountManagement',
+    parentId: 7,
+    id: 71,
+    meta: { title: '账号管理', show:true},
+    component: 'AccountManagement',
+  }, 
+  {
+    name: 'ContentManagement',
+    parentId: 7,
+    id: 72,
+    meta: { title: '内容管理', show:true},
+    component: 'ContentManagement',
+  },
+
+
+  //第八个一级目录UserActivity
+  {
+    'name': 'UserActivity',
+    'parentId': 0,
+    'id': 8,
+    'meta': { title: '动态管理', icon: 'profile','hideChildren': false },
+    'component': 'RouteView',
+    'redirect': '/UserActivity/NewSpeciesRequest',
+  },
+  // UserActivity包括3个子目录：NewSpeciesRequest + Feedback + ErrorReport
+  {
+    name: 'NewSpeciesRequest',
+    parentId: 8,
+    id: 81,
+    meta: { title: '新增请求', show:true},
+    component: 'NewSpeciesRequest',
+  }, 
+  {
+    name: 'Feedback',
+    parentId: 8,
+    id: 82,
+    meta: { title: '用户反馈', show:true},
+    component: 'Feedback',
+  }, 
+  {
+    name: 'ErrorReport',
+    parentId: 8,
+    id: 83,
+    meta: { title: '用户报错', show:true},
+    component: 'ErrorReport',
+  }, 
+
+
+  //第九个一级目录Encyclopedia
+  {
+    'name': 'Encyclopedia',
+    'parentId': 0,
+    'id': 9,
+    'meta': { title: '生物百科', icon: 'table','hideChildren': false },
+    'component': 'RouteView',
+    'redirect': '/Encyclopedia/BioDB',
+  },
+  // Encyclopedia包括2个子目录：BioDB + AttributeQuery
+  {
+    name: 'BioDB',
+    parentId: 9,
+    id: 91,
+    meta: { title: '生物志库', show:true},
+    component: 'BioDB',
+  }, 
+  {
+    name: 'AttributeQuery',
+    parentId: 9,
+    id: 92,
+    meta: { title: '归属查询', show:true},
+    component: 'AttributeQuery',
+  },
+
+
+  //第十个一级目录AddSpecies，不设置子目录
+  {
+    'name': 'AddSpecies',
+    'parentId': 0,
+    'id': 10,
+    'meta': { title: '新增物种', icon: 'form'},
+    'component': 'AddSpecies'
+  },
+  
+
+  //第十一个一级目录PostFeedback，不设置子目录
+  {
+    'name': 'PostFeedback',
+    'parentId': 0,
+    'id': 11,
+    'meta': { title: '上传反馈', icon: 'check-circle-o'},
+    'component': 'PostFeedback'
+  },
 ]
 
 

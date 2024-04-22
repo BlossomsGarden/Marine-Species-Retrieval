@@ -26,6 +26,11 @@ function plugin (Vue) {
         return (permissions) => {
           const [permission, action] = permissions.split('.')
           const permissionList = _this.$store.getters.roles.permissions
+          
+          console.log("看看store.getters",_this.$store.getters)
+          console.log("你是什么数组里找不到？", permissionList)
+          console.log("你是找不到什么值？", permission)
+
           return permissionList.find((val) => {
             return val.permissionId === permission
           }).actionList.findIndex((val) => {

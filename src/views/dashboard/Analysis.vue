@@ -1,9 +1,10 @@
 <template>
   <div>
+
     <a-row :gutter="24">
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" :title="$t('dashboard.analysis.total-sales')" total="￥126,560">
-          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
+        <chart-card :loading="loading" title="总物种数" total="560">
+          <a-tooltip title="当前本系统所包含的总物种数" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div>
@@ -16,34 +17,31 @@
               11%
             </trend>
           </div>
-          <template slot="footer">{{ $t('dashboard.analysis.day-sales') }}<span>￥ 234.56</span></template>
+          <template slot="footer">今日增加：<span>234</span></template>
         </chart-card>
       </a-col>
+
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" :title="$t('dashboard.analysis.visits')" :total="8846 | NumberFormat">
-          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
-            <a-icon type="info-circle-o" />
-          </a-tooltip>
+        <chart-card :loading="loading" title="总访问量" total="8846">
           <div>
             <mini-area />
           </div>
-          <template slot="footer">{{ $t('dashboard.analysis.day-visits') }}<span> {{ '1234' | NumberFormat }}</span></template>
+          <template slot="footer">日访问量：<span>1234</span></template>
         </chart-card>
       </a-col>
+
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" :title="$t('dashboard.analysis.payments')" :total="6560 | NumberFormat">
-          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
-            <a-icon type="info-circle-o" />
-          </a-tooltip>
+        <chart-card :loading="loading" title="图片数" :total="6560">
           <div>
             <mini-bar />
           </div>
-          <template slot="footer">{{ $t('dashboard.analysis.conversion-rate') }} <span>60%</span></template>
+          <template slot="footer">今日增加：<span>1234</span></template>
         </chart-card>
       </a-col>
+
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-        <chart-card :loading="loading" :title="$t('dashboard.analysis.operational-effect')" total="78%">
-          <a-tooltip :title="$t('dashboard.analysis.introduce')" slot="action">
+        <chart-card :loading="loading" title="性状数据" total="111000条">
+          <a-tooltip title="囊括的海洋生物的所有性状" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div>
@@ -66,6 +64,7 @@
     <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
       <div class="salesCard">
         <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+          
           <div class="extra-wrapper" slot="tabBarExtraContent">
             <div class="extra-item">
               <a>{{ $t('dashboard.analysis.all-day') }}</a>
@@ -75,32 +74,36 @@
             </div>
             <a-range-picker :style="{width: '256px'}" />
           </div>
-          <a-tab-pane loading="true" :tab="$t('dashboard.analysis.sales')" key="1">
+
+          <a-tab-pane loading="true" tab="访问量" key="1">
             <a-row>
               <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                <bar :data="barData" :title="$t('dashboard.analysis.sales-trend')" />
+                <bar :data="barData" title="变化趋势" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list :title="$t('dashboard.analysis.sales-ranking')" :list="rankList"/>
+                <rank-list title="资讯" :list="rankList"/>
               </a-col>
             </a-row>
           </a-tab-pane>
-          <a-tab-pane :tab="$t('dashboard.analysis.visits')" key="2">
+
+          <a-tab-pane tab="新增物种信息" key="2">
             <a-row>
               <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                <bar :data="barData2" :title="$t('dashboard.analysis.visits-trend')" />
+                <bar :data="barData2" title="变化趋势" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list :title="$t('dashboard.analysis.visits-ranking')" :list="rankList"/>
+                <rank-list title="资讯" :list="rankList"/>
               </a-col>
             </a-row>
           </a-tab-pane>
+
         </a-tabs>
       </div>
     </a-card>
 
     <div class="antd-pro-pages-dashboard-analysis-twoColLayout" :class="!isMobile && 'desktop'">
       <a-row :gutter="24" type="flex" :style="{ marginTop: '24px' }">
+        
         <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card :loading="loading" :bordered="false" :title="$t('dashboard.analysis.online-top-search')" :style="{ height: '100%' }">
             <a-dropdown :trigger="['click']" placement="bottomLeft" slot="extra">
@@ -163,49 +166,40 @@
             </div>
           </a-card>
         </a-col>
+
         <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card class="antd-pro-pages-dashboard-analysis-salesCard" :loading="loading" :bordered="false" :title="$t('dashboard.analysis.the-proportion-of-sales')" :style="{ height: '100%' }">
-            <div slot="extra" style="height: inherit;">
-              <!-- style="bottom: 12px;display: inline-block;" -->
-              <span class="dashboard-analysis-iconGroup">
-                <a-dropdown :trigger="['click']" placement="bottomLeft">
-                  <a-icon type="ellipsis" class="ant-dropdown-link" />
-                  <a-menu slot="overlay">
-                    <a-menu-item>
-                      <a href="javascript:;">{{ $t('dashboard.analysis.dropdown-option-one') }}</a>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a href="javascript:;">{{ $t('dashboard.analysis.dropdown-option-two') }}</a>
-                    </a-menu-item>
-                  </a-menu>
-                </a-dropdown>
-              </span>
-              <div class="analysis-salesTypeRadio">
-                <a-radio-group defaultValue="a">
-                  <a-radio-button value="a">{{ $t('dashboard.analysis.channel.all') }}</a-radio-button>
-                  <a-radio-button value="b">{{ $t('dashboard.analysis.channel.online') }}</a-radio-button>
-                  <a-radio-button value="c">{{ $t('dashboard.analysis.channel.stores') }}</a-radio-button>
-                </a-radio-group>
-              </div>
-
-            </div>
-            <h4>{{ $t('dashboard.analysis.sales') }}</h4>
-            <div>
-              <!-- style="width: calc(100% - 240px);" -->
-              <div>
-                <v-chart :force-fit="true" :height="405" :data="pieData" :scale="pieScale">
-                  <v-tooltip :showTitle="false" dataKey="item*percent" />
-                  <v-axis />
-                  <!-- position="right" :offsetX="-140" -->
-                  <v-legend dataKey="item"/>
-                  <v-pie position="percent" color="item" :vStyle="pieStyle" />
-                  <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
-                </v-chart>
-              </div>
-
-            </div>
+          <a-card class="antd-pro-pages-dashboard-analysis-salesCard" :loading="loading" :bordered="false" title="生物信息类别分布" :style="{ height: '100%' }">
+            <a-row>
+              <a-col :span="12">
+                <h4>动物界</h4>
+                <div>
+                  <v-chart :force-fit="true" :height="300" :data="pieData" :scale="pieScale">
+                    <v-tooltip :showTitle="false" dataKey="item*percent" />
+                    <v-axis />
+                    <!-- position="right" :offsetX="-140" -->
+                    <v-legend dataKey="item"/>
+                    <v-pie position="percent" color="item" :vStyle="pieStyle" />
+                    <v-coord type="theta" :radius="0.9" :innerRadius="0.5" />
+                  </v-chart>
+                </div>
+              </a-col>
+              <a-col  :span="12">
+                <h4>植物界</h4>
+                <div>
+                  <v-chart :force-fit="true" :height="300" :data="pieData" :scale="pieScale">
+                    <v-tooltip :showTitle="false" dataKey="item*percent" />
+                    <v-axis />
+                    <!-- position="right" :offsetX="-140" -->
+                    <v-legend dataKey="item"/>
+                    <v-pie position="percent" color="item" :vStyle="pieStyle" />
+                    <v-coord type="theta" :radius="0.9" :innerRadius="0.5" />
+                  </v-chart>
+                </div>
+              </a-col>
+            </a-row>
           </a-card>
         </a-col>
+
       </a-row>
     </div>
   </div>
@@ -239,13 +233,27 @@ for (let i = 0; i < 12; i += 1) {
   })
 }
 
-const rankList = []
-for (let i = 0; i < 7; i++) {
-  rankList.push({
-    name: '白鹭岛 ' + (i + 1) + ' 号店',
-    total: 1234.56 - i * 100
-  })
-}
+const rankList = [
+  {
+    name:'生物志库第三次数据更新！',
+    total:'2024-04-21'
+  },  {
+    name:'用户体验反馈问卷',
+    total:'2024-04-21'
+  },  {
+    name:'潜水摄影赢大奖！',
+    total:'2024-04-21'
+  },  {
+    name:'海洋生物志库增值服务科普讲座',
+    total:'2024-04-21'
+  },{
+    name:'潜水摄影赢大奖！',
+    total:'2024-04-21'
+  },  {
+    name:'海洋生物志库增值服务科普讲座',
+    total:'2024-04-21'
+  },
+]
 
 const searchUserData = []
 for (let i = 0; i < 7; i++) {

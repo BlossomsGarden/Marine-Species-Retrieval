@@ -16,13 +16,10 @@
     <template v-slot:extraContent>
       <div class="extra-content">
         <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
+          <a-statistic title="新增生物信息" value="200" />
         </div>
         <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
+          <a-statistic title="注册时间" value="2024-01-01" />
         </div>
       </div>
     </template>
@@ -92,27 +89,15 @@
             :body-style="{ padding: 0 }"
           >
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
+              <a>生物百科</a>
+              <a>反馈</a>
+              <a>用户管理</a>
+              <a>内容管理</a>
               <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
             </div>
           </a-card>
-          <a-card
-            title="XX 指数"
-            style="margin-bottom: 24px"
-            :loading="radarLoading"
-            :bordered="false"
-            :body-style="{ padding: 0 }"
-          >
-            <div style="min-height: 400px;">
-              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData" />
-            </div>
-          </a-card>
+          
+          
           <a-card :loading="loading" title="团队" :bordered="false">
             <div class="members">
               <a-row>

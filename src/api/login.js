@@ -18,8 +18,6 @@ const userApi = {
 }
 
 
-
-
 export function getSmsCaptcha (parameter) {
   return request({
     url: userApi.SendSms,
@@ -27,6 +25,7 @@ export function getSmsCaptcha (parameter) {
     data: parameter
   })
 }
+
 
 /**
  * 获取使用者信息
