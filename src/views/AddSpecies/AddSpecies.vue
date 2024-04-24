@@ -47,21 +47,23 @@ import TaskForm from '@/views/form/advancedForm/TaskForm'
 import FooterToolBar from '@/components/FooterToolbar'
 import { baseMixin } from '@/store/app-mixin'
 import {uploadImage} from '@/api/utility'
+import notification from 'ant-design-vue/es/notification'
+import {newSpecies} from '@/api/speciesManager'
 
 const fieldLabels = {
-  cn_name: '仓库名',
-  en_name: '仓库域名',
-  latin_name: '仓库管理员',
+  cnName: '仓库名',
+  enName: '仓库域名',
+  latinName: '仓库管理员',
   morphology: '审批人',
   habitat: '生效日期',
   feature: '仓库类型',
 
-  kingdom: '界',
-  phylum: '门',
-  class: '纲',
-  order: '目',
-  family: '科',
-  genus: '属'
+  kingdomName: '界',
+  phylumName: '门',
+  className: '纲',
+  orderName: '目',
+  familyName: '科',
+  genusName: '属'
 }
 
 export default {
@@ -268,12 +270,30 @@ export default {
         const ImageList= this.uploadFileList.map(function(obj) {
           return obj.url;
         });
-        const AttributeInfo=values[1]
-        
-        console.log("看看基本信息", BasicInfo)
-        console.log("看看图片链接", ImageList)
-        console.log("看看归属", AttributeInfo)
-
+        const TaxonomyInfo=values[1]
+        // console.log("看看基本信息", BasicInfo)
+        // console.log("看看图片链接", ImageList)
+        // console.log("看看归属", TaxonomyInfo)
+        const SpeciesDTO={
+          ...BasicInfo,
+          imageList:ImageList,
+          ...TaxonomyInfo
+        }
+        console.log(SpeciesDTO)
+        newSpecies(SpeciesDTO)
+        .then(res=>{
+          if(res.success){
+            notification.success({message:"提交成功！"})
+          }
+          else{
+            notification.error({message:res.msg})
+            console.log(res)
+          }
+        })
+        .catch(err=>{
+          console.log("出现了未知的错误",err)
+          notification.error({message:"出现了未知的错误"+err})
+        })
       })
       .catch(() => {
         const errors = Object.assign({}, repository.form.getFieldsError(), task.form.getFieldsError())

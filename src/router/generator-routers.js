@@ -33,7 +33,7 @@ const constantRouterComponents = {
 
   //Encyclopedia
   BioDB:()=>import("@/views/Encyclopedia/BioDB"),
-  AttributeQuery:()=>import("@/views/Encyclopedia/AttributeQuery"),
+  TaxonomyQuery:()=>import("@/views/Encyclopedia/TaxonomyQuery"),
 
   //AddSpecies
   AddSpecies:()=>import("@/views/AddSpecies/AddSpecies"),
@@ -73,7 +73,6 @@ const constantRouterComponents = {
 
 
   // account
-  AccountCenter: () => import('@/views/account/center'),
   BasicSetting: () => import('@/views/account/settings/BasicSetting'),
 
   // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
@@ -260,31 +259,14 @@ const wholeMenuInfo=[
 
 
 
-  //第六个一级目录account
+  //第六个一级目录account，不设置子目录
   {
-    'name': 'account',
+    'name': 'Account',
     'parentId': 0,
     'id': 6,
-    'meta': { title: 'Account', icon: 'user','hideChildren': false },
-    'component': 'RouteView',
-    'redirect': '/account/AccountCenter',
+    'meta': { title: '账号设置', icon: 'user','hideChildren': false },
+    'component': 'BasicSetting',
   },
-  // account包括2个子目录：AccountCenter + BasicSetting
-  {
-    name: 'AccountCenter',
-    parentId: 6,
-    id: 61,
-    meta: { title: 'menu.account.center', show:true},
-    component: 'AccountCenter',
-  },
-  {
-    name: 'BasicSetting',
-    parentId: 6,
-    id: 62,
-    meta: { title: 'BasicSetting', show:true},
-    component: 'BasicSetting',
-  },
-
 
 
   //第七个一级目录PlatformManagement
@@ -355,7 +337,7 @@ const wholeMenuInfo=[
     'component': 'RouteView',
     'redirect': '/Encyclopedia/BioDB',
   },
-  // Encyclopedia包括2个子目录：BioDB + AttributeQuery
+  // Encyclopedia包括2个子目录：BioDB + TaxonomyQuery
   {
     name: 'BioDB',
     parentId: 9,
@@ -364,11 +346,11 @@ const wholeMenuInfo=[
     component: 'BioDB',
   }, 
   {
-    name: 'AttributeQuery',
+    name: 'TaxonomyQuery',
     parentId: 9,
     id: 92,
     meta: { title: '归属查询', show:true},
-    component: 'AttributeQuery',
+    component: 'TaxonomyQuery',
   },
 
 

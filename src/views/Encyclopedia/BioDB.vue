@@ -1,9 +1,9 @@
 <template>
   <page-header-wrapper
-    content="段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态， 提供跨越设计与开发的体验解决方案。"
+    content="仿照中国生物志库进行设计，插入了一些测试数据。"
   >
-    <a-input-search style="width: 80%;" />
-    <p>生僻字：㫋䰳鰯䱝鰧鮄鰕鯱鱊鱎鱥鯮鱲䱗鮀鮈鰋鰕鱵䱻魾鮡鮠䱀鰤魣鰶䳭鵙鸊鷉鵰鳽[鱼良][鱼丹][鱼/遂][鱼芒][门@身][马九][米乙]䕹䓫䓮䕅[木匿]㰀䉡㼎[木衣][竹/思]簩[艹/杭]䓞[艹/洽][山/弄][竹/沙]簕</p>
+    <a-input-search v-model="queryInput" style="width: 80%;" />
+    <p>生僻字：㫋 䰳 鰯 䱝 鰧 鮄 鰕 鯱 鱊 鱎 鱥 鯮 鱲 䱗 鮀 鮈 鰋 鰕 鱵 䱻 魾 鮡 鮠 䱀 鰤 魣 鰶 䳭 鵙 鸊 鷉 鵰 鳽 䕹 䓫 䓮 䕅 㰀 䉡 㼎 䓞 簕</p>
 
     <div class="ant-pro-pages-list-projects-cardList">
       <a-list :loading="loading" :data-source="data" :grid="{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }">
@@ -32,12 +32,25 @@
         </a-list-item>
       </a-list>
     </div>
+
+    <!-- 这篇文章真的救了我啊：https://blog.csdn.net/m0_64370558/article/details/130567199 -->
+    <a-pagination
+      :current="pagination.current"
+      :total="pagination.total"
+      :page-size="pagination.pageSize"
+      :show-total="pagination.showTotal"
+      @change="handlePageChange"
+      style="float:right"
+    />
+
   </page-header-wrapper>
 </template>
 
 <script>
 import moment from 'moment'
+import { Modal, notification, Pagination } from 'ant-design-vue';
 import { TagSelect, StandardFormRow, Ellipsis, AvatarList } from '@/components'
+import {getAllSpecies,getContributors} from '@/api/speciesManager'
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
 
@@ -48,13 +61,25 @@ export default {
     Ellipsis,
     TagSelect,
     TagSelectOption,
-    StandardFormRow
+    StandardFormRow,
+    'a-pagination': Pagination,
   },
   data () {
     return {
       data: [],
       form: this.$form.createForm(this),
-      loading: true
+      loading: true,
+
+      //分页属性
+      pagination: {
+        total:0,  //总数据条数
+        current:1,
+        pageSize: 5,  //每页显示5条数据
+        showTotal: total => `共 ${total} 条数据`,  //分页中显示总的数据
+      },
+
+      //搜索栏内容
+      queryInput:'',
     }
   },
   filters: {
@@ -63,18 +88,65 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.getList(1,8,this.queryInput)
   },
   methods: {
-    handleChange (value) {
-      console.log(`selected ${value}`)
+    //点击下一页等页面按钮的处理=1函数
+    handlePageChange(pageNo, pageSize){
+      this.loading=true
+      console.log("看看Input",this.queryInput)
+      this.getList(pageNo,pageSize,this.queryInput)
     },
-    getList () {
-      this.$http.get('/list/article', { params: { count: 8 } }).then(res => {
-        console.log('res', res)
-        this.data = res.result
-        this.loading = false
+
+    //获取帖子
+    async getList (pNo,pSize,keyword) {
+      var speciesPage;
+      await getAllSpecies(pNo,pSize,keyword)
+      .then(res=>{
+        speciesPage=res.data
       })
+      // console.log("看看speciesPage",speciesPage)
+      //赋值分页属性
+      this.pagination.total=speciesPage.total
+      this.pagination.current=pNo
+      this.pagination.pageSize=pSize
+
+      //赋值列表data
+      this.data=[]
+      for (const species of speciesPage.records){
+        var obj={
+          id:species.id,
+          title:species.cnName,
+          description:species.morphology,
+          cover:species.imageList.length==0?"https://poby-tongji.oss-cn-shanghai.aliyuncs.com/static-img/jiren/2024-sakura-team-modal.jpg":species.imageList[0],
+          updatedAt:species.updateTime
+        }
+
+        var members=[];
+        await getContributors(species.id)
+        .then(res=>{
+          for (const u of res.data){
+            members.push({
+              name:u.name,
+              avatar:u.avatarUrl,
+            })
+          }
+        })
+        this.data.push({
+          ...obj,
+          members:members
+        })
+      }
+      this.loading=false
+      
+      // this.$http.get('/list/article', { params: { count: 8 } })
+      // .then(res => {
+      //   console.log('res', res)
+      //   this.data = res.result
+      //   this.loading = false
+      // })
+
+      // console.log("看看赋值后的data",this.data)
     }
   }
 }

@@ -6,7 +6,7 @@
           <a-input
             placeholder="请输入物种中文名称"
             v-decorator="[
-              'cn_name',
+              'cnName',
               {rules: [{ required: true, message: '请输入物种中文名称', whitespace: true}]}
             ]" />
         </a-form-item>
@@ -17,18 +17,18 @@
           <a-input
             placeholder="请输入物种英文名"
             v-decorator="[
-              'en_name',
+              'enName',
               {rules: [{ required: true, message: '请输入物种英文名', whitespace: true}]}
             ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 9, offset: 1}" :lg="{span: 10}" :md="{span: 24}" :sm="24">
         <a-form-item
-          label="仓库管理员">
+          label="请输入物种拉丁文名">
           <a-input
             placeholder="请输入物种拉丁文名"
             v-decorator="[
-              'latin_name',
+              'latinName',
               {rules: [{ required: true, message: '请输入物种拉丁文名', whitespace: true}]}
             ]" />
         </a-form-item>

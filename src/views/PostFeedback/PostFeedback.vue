@@ -8,10 +8,9 @@
           :wrapperCol="{lg: {span: 10}, sm: {span: 17} }">
           <a-input
             v-decorator="[
-              'name',
+              'title',
               {rules: [{ required: true, message: '请输入反馈主题' }]}
             ]"
-            name="name"
             placeholder="请输入反馈主题" />
         </a-form-item>
         
@@ -23,19 +22,9 @@
             rows="4"
             placeholder="请输入反馈内容"
             v-decorator="[
-              'description',
+              'content',
               {rules: [{ required: true, message: '请输入反馈内容' }]}
             ]" />
-        </a-form-item>
-        
-        <a-form-item
-          label="总体评分"
-          :labelCol="{lg: {span: 7}, sm: {span: 7}}"
-          :wrapperCol="{lg: {span: 10}, sm: {span: 17} }"
-          :required="false"
-        >
-          <a-input-number :min="0" :max="100" />
-          <span> 分</span>
         </a-form-item>
 
         <a-form-item
@@ -51,6 +40,9 @@
 </template>
 
 <script>
+import {newFeedback} from '@/api/feedback'
+import notification from 'ant-design-vue/es/notification'
+
 export default {
   data () {
     return {
@@ -63,7 +55,20 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          newFeedback(values)
+          .then(res=>{
+            if(res.success){
+              notification.success({message:"提交成功！"})
+            }
+            else{
+              notification.error({message:"出现未知的错误！"})
+              console.log(res)
+            }
+          })
+          .catch(err=>{
+            notification.error({message:"出现未知的错误！"})
+            console.log(err)
+          })
         }
       })
     }

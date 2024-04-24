@@ -52,10 +52,18 @@ const AvatarList = {
         [`${this.size}`]: true
       }
       const totalSize = items.length
-
-      if (this.maxLength > 0) {
+      
+      //增加totalSize - this.maxLength>0，避免+0或+-1这种东西出现
+      if (this.maxLength > 0 && totalSize - this.maxLength>0) {
         items = items.slice(0, this.maxLength)
-        items.push((<Avatar size={this.size === 'mini' ? 'small' : this.size} style={this.excessItemsStyle}>{`+${totalSize - this.maxLength}`}</Avatar>))
+        items.push(
+          (
+          <Avatar 
+            size={this.size === 'mini' ? 'small' : this.size} 
+            style={this.excessItemsStyle}>{`+${totalSize - this.maxLength}`}
+          </Avatar>
+          )
+        )
       }
       return items.map((item) => (
         <li class={className}>{item}</li>
