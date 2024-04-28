@@ -1,29 +1,53 @@
 <template>
   <page-header-wrapper>
+    <a-modal
+      title="添加用户"
+      v-model="modalVisible"
+      @ok="modalOk"
+      @cancel="modalCancel"
+    >
+      <a-form :label-col="{span:4}" :wrapper-col="{span:20}">
+        <a-form-item label="用户昵称" :required="true" style="display:flex">
+          <a-input v-model="newUser.name"/>
+        </a-form-item>
+
+        <a-form-item label="登录密码">
+          <a-input v-model="newUser.password"/>
+        </a-form-item>
+
+        <a-form-item label="归属组织" :required="true" style="display:flex">
+          <a-select v-model="newUser.organizationId" placeholder="请选择">
+            <a-select-option v-for="item in newUser.orgList" :key="item.id" :value="item.id">
+              {{item.name}}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="归属组织">
-                <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">环保组织</a-select-option>
-                  <a-select-option value="2">中科院动物研究所</a-select-option>
-                  <a-select-option value="3">同济大学海洋学院</a-select-option>
+                <a-select v-model="queryParam.orgId" placeholder="请选择" default-value="0">
+                  <a-select-option v-for="item in orgList" :key="item.id" :value="item.id">
+                    {{item.name}}
+                  </a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
 
             <a-col :md="8" :sm="24">
               <a-form-item label="用户名">
-                <a-input v-model="queryParam.id" placeholder=""/>
+                <a-input v-model="queryParam.name" placeholder="请输入用户名查找"/>
               </a-form-item>
             </a-col>
 
             <a-col :md="8" :sm="24">
               <span class="table-page-search-submitButtons" :style="{ float: 'right', overflow: 'hidden' }">
-                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                <a-button type="primary" @click="handleQuery()">查询</a-button>
                 <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
               </span>
             </a-col>
@@ -32,105 +56,43 @@
         </a-form>
       </div>
 
-      <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="handleEdit()">新建</a-button>
-        <!-- <a-button type="dashed" @click="tableOption">{{ optionAlertShow && '关闭' || '开启' }} alert</a-button> -->
-        <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
-          <a-menu slot="overlay">
-            <a-menu-item key="1"><a-icon type="delete" />封禁</a-menu-item>
-            <!-- lock | unlock -->
-            <a-menu-item key="2"><a-icon type="lock" />锁定</a-menu-item>
-          </a-menu>
-          <a-button style="margin-left: 8px">
-            批量操作 <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
-      </div>
-
-      <s-table
-        ref="table"
-        size="default"
-        rowKey="key"
+      <a-table
+        rowKey="id"
         :columns="columns"
-        :data="loadData"
+        :data-source="tableData" 
         :alert="true"
-        :rowSelection="rowSelection"
-        showPagination="auto"
       >
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
         </span>
-        <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+
+        <span slot="orgName" slot-scope="text,record">
+          <!-- 减去2是因为organization表中1:'admin'。取到列表之后尾部插入0:'全部'，又删除了1:'admin'，于是2:'同济大学'索引为0 -->
+          {{orgList[record.organizationId-2].name}}
         </span>
-        <span slot="description" slot-scope="text">
-          <ellipsis :length="4" tooltip>{{ text }}</ellipsis>
+
+        <span slot="status" slot-scope="text,record">
+          <a-badge :color="record.blocked?'red':'green'" :text="record.blocked?'封禁中':'使用中'" />
         </span>
 
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record)">封禁</a>
+            <a @click="_blockUser(record)">封禁</a>
             <a-divider type="vertical" />
-            <a @click="handleSub(record)" style="color:red">删除</a>
+            <a @click="_deleteUser(record)" style="color:red">删除</a>
           </template>
         </span>
-      </s-table>
+      </a-table>
 
-      <create-form
-        ref="createModal"
-        :visible="visible"
-        :loading="confirmLoading"
-        :model="mdl"
-        @cancel="handleCancel"
-        @ok="handleOk"
-      />
-      <step-by-step-modal ref="modal" @ok="handleOk"/>
+
     </a-card>
   </page-header-wrapper>
 </template>
 
 <script>
-import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
+import { Modal, notification } from 'ant-design-vue'
+import {getRoleList,getServiceList,getAllOrg,getAllUser,blockUser,deleteUser,newUser } from '@/api/manage'
 
-import StepByStepModal from '@/views/list/modules/StepByStepModal'
-import CreateForm from '@/views/list/modules/CreateForm'
-
-const columns = [
-  {
-    title: '编号',
-    scopedSlots: { customRender: 'serial' }
-  },
-  {
-    title: '用户名',
-    dataIndex: 'no'
-  },
-  {
-    title: '描述',
-    dataIndex: 'description'
-  },
-  {
-    title: '归属组织',
-    dataIndex: 'callNo',
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
-  },
-  {
-    title: '上次登录',
-    dataIndex: 'updatedAt',
-    sorter: true
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    width: '150px',
-    scopedSlots: { customRender: 'action' }
-  }
-]
 
 const statusMap = {
   0: {
@@ -151,36 +113,69 @@ const statusMap = {
   }
 }
 
-export default {
-  name: 'TableList',
-  components: {
-    STable,
-    Ellipsis,
-    CreateForm,
-    StepByStepModal
+const columns=[
+  {
+    title: '编号',
+    align:'center',
+    scopedSlots: { customRender: 'serial' }
   },
+  {
+    title: '用户名',
+    align:'center',
+    dataIndex: 'name'
+  },
+  {
+    title: '描述',
+    align:'center',
+    dataIndex: 'description'
+  },
+  {
+    title: '归属组织',
+    align:'center',
+    dataIndex: 'orgName',
+    scopedSlots: { customRender: 'orgName' }
+  },
+  {
+    title: '状态',
+    align:'center',
+    dataIndex: 'status',
+    scopedSlots: { customRender: 'status' }
+  },
+  {
+    title: '上次登录',
+    align:'center',
+    dataIndex: 'updateTime',
+  },
+  {
+    title: '操作',
+    align:'center',
+    dataIndex: 'action',
+    scopedSlots: { customRender: 'action' }
+  }
+]
+
+export default {
+  name: 'AccountManagement',
   data () {
-    this.columns = columns
     return {
-      // create model
-      visible: false,
-      confirmLoading: false,
-      mdl: null,
-      // 高级搜索 展开/关闭
-      advanced: false,
+      //组织列表
+      orgList:[],
       // 查询参数
-      queryParam: {},
-      // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        const requestParameters = Object.assign({}, parameter, this.queryParam)
-        console.log('loadData request parameters:', requestParameters)
-        return getServiceList(requestParameters)
-          .then(res => {
-            return res.result
-          })
+      queryParam: {
+        orgId:0,
+        name:''
       },
-      selectedRowKeys: [],
-      selectedRows: []
+      //表格变量
+      tableData: [],
+      columns: columns,
+      //新建用户modal变量
+      modalVisible: false,
+      newUser:{
+        name:'',
+        password:'',
+        organizationId:2,
+        orgList:[]
+      }
     }
   },
   filters: {
@@ -191,95 +186,60 @@ export default {
       return statusMap[type].status
     }
   },
-  created () {
+  async created () {
     getRoleList({ t: new Date() })
-  },
-  computed: {
-    rowSelection () {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
-    }
+
+    //获得都有哪些组织
+    await getAllOrg()
+    .then(res=>{
+      //你1是管理员，这个就别要了
+      this.orgList=res.data.filter(item => item.id!=1)
+      this.orgList.push({
+        id:0,
+        name:'全部'
+      })
+    })
+
+    await this.handleQuery()
   },
   methods: {
-    handleAdd () {
-      this.mdl = null
-      this.visible = true
-    },
-    handleEdit (record) {
-      this.visible = true
-      this.mdl = { ...record }
-    },
-    handleOk () {
-      const form = this.$refs.createModal.form
-      this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          if (values.id > 0) {
-            // 修改 e.g.
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.info('修改成功')
-            })
-          } else {
-            // 新增
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.info('新增成功')
-            })
-          }
-        } else {
-          this.confirmLoading = false
-        }
+    handleQuery(){
+      getAllUser(this.queryParam.orgId, this.queryParam.name)
+      .then(res=>{
+        console.log("查看查询结果",res.data)
+        this.tableData=res.data
       })
     },
-    handleCancel () {
-      this.visible = false
 
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+    //弹出新建modal
+    handleEdit (record) {
+      this.newUser.name=''
+      this.newUser.password=''
+      this.newUser.organizationId=2
+      this.newUser.orgList = this.orgList.filter(item => item.id != 0 && item.id!=1)
+      this.modalVisible = true
     },
-    handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
+    modalOk(){
+      newUser(this.newUser)
+      .then(res=>{notification.success({message:'添加用户成功！'})})
+      .catch(err=>{console.log(err);notification.error({message:"添加用户失败！"})})
+      this.modalVisible=false
     },
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
+    //添加问卷问题的modal<取消>按钮
+    modalCancel(){
+      this.modalVisible=false
     },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
+
+    _deleteUser(row){
+      deleteUser(row.id)
+      .then(res=>{notification.success({message:'删除成功！'})})
+      .catch(err=>{console.log(err);notification.error({message:"删除失败！"})})
     },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
-    }
+    _blockUser(row){
+      blockUser(row.id)
+      .then(res=>{notification.success({message:'封禁成功！'})})
+      .catch(err=>{console.log(err);notification.error({message:"封禁失败！"})})
+    },
   }
 }
 </script>

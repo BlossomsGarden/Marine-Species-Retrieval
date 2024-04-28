@@ -179,7 +179,7 @@ const activity = () => {
 const teams = () => {
   return builder([{
     id: 1,
-    name: '科学搬砖组',
+    name: '学术答辩组',
     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
   },
   {
@@ -189,13 +189,8 @@ const teams = () => {
   },
   {
     id: 1,
-    name: '设计天团',
+    name: '电信学院',
     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/gaOngJwsRYRaVAuXXcmB.png'
-  },
-  {
-    id: 1,
-    name: '中二少女团',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ubnKSIfAJTxIgXOKlciN.png'
   },
   {
     id: 1,

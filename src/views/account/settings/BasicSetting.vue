@@ -86,17 +86,19 @@
     </a-modal>
 
   </div>
+  
 </template>
 
 <script>
 import {uploadImage} from '@/api/utility'
 import { notification } from 'ant-design-vue';
-import { editInfo,getInfo} from '@/api/login'
+import {getInfo} from '@/api/login'
+import {editInfo} from '@/api/manage'
 import { baseMixin } from '@/store/app-mixin'
 import storage from 'store'
-import { SHOW_NAME, SHOW_AVATAR } from '@/store/mutation-types'
 
 export default {
+  name:'Account',
   mixins: [baseMixin],
   data () {
     return {
@@ -229,11 +231,9 @@ export default {
     async setAvatar () {
       const data = await new Promise((resolve,reject)=>{
         this.$refs.cropper.getCropBlob((data) => {
-          console.log("谁先？")
           resolve(data)
         })
       })
-      console.log("谁后？")
 
       const blobToFile = (blob, fileName) => { 
         return new window.File([blob], fileName, { type: blob.type, });
@@ -247,7 +247,6 @@ export default {
         .then(res=>{
           console.log("上传图片成功！",res)
           resolve(res.data)
-          console.log("谁先？")
         })
         .catch(err=>{
           console.log("图片上传失败！",err.message)
@@ -257,7 +256,6 @@ export default {
       })
 
       this.option.img=this.options.img
-      console.log("谁后？看看this.option.img",this.option.img)
       this.visible = false  
 
       this.save()

@@ -7,18 +7,23 @@
             placeholder="请输入物种中文名称"
             v-decorator="[
               'cnName',
-              {rules: [{ required: true, message: '请输入物种中文名称', whitespace: true}]}
+              {
+                initialValue:initialData.cnName,
+                rules: [{ required: true, message: '请输入物种中文名称', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
       <a-col :xl="{span: 7, offset: 1}" :lg="{span: 8}" :md="{span: 12}" :sm="24">
-        <a-form-item
-          label="请输入物种英文名">
+        <a-form-item label="请输入物种英文名">
           <a-input
             placeholder="请输入物种英文名"
             v-decorator="[
               'enName',
-              {rules: [{ required: true, message: '请输入物种英文名', whitespace: true}]}
+              {
+                initialValue:initialData.enName,
+                rules: [{ required: true, message: '请输入物种英文名称', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
@@ -29,7 +34,10 @@
             placeholder="请输入物种拉丁文名"
             v-decorator="[
               'latinName',
-              {rules: [{ required: true, message: '请输入物种拉丁文名', whitespace: true}]}
+              {
+                initialValue:initialData.latinName,
+                rules: [{ required: true, message: '请输入物种拉丁文名称', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
@@ -42,7 +50,10 @@
             placeholder="请输入物种形态描述"
             v-decorator="[
               'morphology',
-              {rules: [{ required: true, message: '请输入物种形态描述', whitespace: true}]}
+              {
+                initialValue:initialData.morphology,
+                rules: [{ required: true, message: '请输入物种形态', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
@@ -53,7 +64,10 @@
             placeholder="请输入物种生境信息"
             v-decorator="[
               'habitat',
-              {rules: [{ required: true, message: '请输入物种生境信息', whitespace: true}]}
+              {
+                initialValue:initialData.habitat,
+                rules: [{ required: true, message: '请输入物种生境信息', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
@@ -64,7 +78,10 @@
             placeholder="请输入物种鉴别特征"
             v-decorator="[
               'feature',
-              {rules: [{ required: true, message: '请输入物种鉴别特征', whitespace: true}]}
+              {
+                initialValue:initialData.feature,
+                rules: [{ required: true, message: '请输入物种鉴别特征', whitespace: true},]
+              },
             ]" />
         </a-form-item>
       </a-col>
@@ -82,11 +99,16 @@ export default {
     showSubmit: {
       type: Boolean,
       default: false
-    }
+    },
+    // 接收父组件传递的初值
+    initialData: {
+      type: Object,
+      required: true,
+    },
   },
   data () {
     return {
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this), 
     }
   },
   methods: {

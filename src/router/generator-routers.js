@@ -24,12 +24,8 @@ const constantRouterComponents = {
 
   // PlatformManagement
   AccountManagement:()=>import('@/views/PlatformManagement/AccountManagement'),
-  ContentManagement:()=>import('@/views/PlatformManagement/ContentManagement'),
-
-  // UserActivity
-  ErrorReport:()=>import("@/views/UserActivity/ErrorReport"),
-  Feedback:()=>import("@/views/UserActivity/Feedback"),
-  NewSpeciesRequest:()=>import("@/views/UserActivity/NewSpeciesRequest"),
+  // ContentManagement:()=>import('@/views/PlatformManagement/ContentManagement'),
+  Feedback:()=>import("@/views/PlatformManagement/Feedback"),
 
   //Encyclopedia
   BioDB:()=>import("@/views/Encyclopedia/BioDB"),
@@ -37,6 +33,7 @@ const constantRouterComponents = {
 
   //AddSpecies
   AddSpecies:()=>import("@/views/AddSpecies/AddSpecies"),
+  EditSpecies:()=>import("@/views/AddSpecies/EditSpecies"),
 
   //PostFeedback
   PostFeedback:()=>import("@/views/PostFeedback/PostFeedback"),
@@ -70,12 +67,7 @@ const constantRouterComponents = {
   Exception403: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
   Exception404: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
   Exception500: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
-
-
-  // account
-  BasicSetting: () => import('@/views/account/settings/BasicSetting'),
-
-  // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
+  
 }
 
 
@@ -259,14 +251,8 @@ const wholeMenuInfo=[
 
 
 
-  //第六个一级目录account，不设置子目录
-  {
-    'name': 'Account',
-    'parentId': 0,
-    'id': 6,
-    'meta': { title: '账号设置', icon: 'user','hideChildren': false },
-    'component': 'BasicSetting',
-  },
+  //第六个一级目录account，不设置子目录，已弃置
+
 
 
   //第七个一级目录PlatformManagement
@@ -274,11 +260,12 @@ const wholeMenuInfo=[
     'name': 'PlatformManagement',
     'parentId': 0,
     'id': 7,
-    'meta': { title: '平台管理', icon: 'form','hideChildren': false },
+    'meta': {title: '平台管理', icon: 'form'},
     'component': 'RouteView',
     'redirect': '/PlatformManagement/AccountManagement',
   },
-  // PlatformManagement包括2个子目录：AccountManagement + ContentManagement
+  // PlatformManagement包括3个子目录：AccountManagement + ContentManagement + Feedback
+  //第2个子目录已经弃置
   {
     name: 'AccountManagement',
     parentId: 7,
@@ -286,46 +273,23 @@ const wholeMenuInfo=[
     meta: { title: '账号管理', show:true},
     component: 'AccountManagement',
   }, 
-  {
-    name: 'ContentManagement',
-    parentId: 7,
-    id: 72,
-    meta: { title: '内容管理', show:true},
-    component: 'ContentManagement',
-  },
-
-
-  //第八个一级目录UserActivity
-  {
-    'name': 'UserActivity',
-    'parentId': 0,
-    'id': 8,
-    'meta': { title: '动态管理', icon: 'profile','hideChildren': false },
-    'component': 'RouteView',
-    'redirect': '/UserActivity/NewSpeciesRequest',
-  },
-  // UserActivity包括3个子目录：NewSpeciesRequest + Feedback + ErrorReport
-  {
-    name: 'NewSpeciesRequest',
-    parentId: 8,
-    id: 81,
-    meta: { title: '新增请求', show:true},
-    component: 'NewSpeciesRequest',
-  }, 
+  // {
+  //   name: 'ContentManagement',
+  //   parentId: 7,
+  //   id: 72,
+  //   meta: { title: '内容管理', show:true},
+  //   component: 'ContentManagement',
+  // },
   {
     name: 'Feedback',
-    parentId: 8,
-    id: 82,
+    parentId: 7,
+    id: 73,
     meta: { title: '用户反馈', show:true},
     component: 'Feedback',
   }, 
-  {
-    name: 'ErrorReport',
-    parentId: 8,
-    id: 83,
-    meta: { title: '用户报错', show:true},
-    component: 'ErrorReport',
-  }, 
+
+
+  //原第八个一级目录已被整体弃置
 
 
   //第九个一级目录Encyclopedia
@@ -361,6 +325,13 @@ const wholeMenuInfo=[
     'id': 10,
     'meta': { title: '新增物种', icon: 'form'},
     'component': 'AddSpecies'
+  },
+  {
+    'name': 'EditSpecies',
+    'parentId': 0,
+    'id': 12,
+    'meta': { title: '修改物种', show:false},
+    'component': 'EditSpecies'
   },
   
 

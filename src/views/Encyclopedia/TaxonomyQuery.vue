@@ -1,5 +1,43 @@
 <template>
   <page-header-wrapper>
+    <a-modal 
+      :visible="modalVisible"
+      @ok="modalModify"
+      ok-text="修改"
+      :ok-button-props="{ props: {disabled: !this.isAdmin} }"
+      @cancel="modalCancel"
+    >
+      <a-descriptions title="物种信息">
+        <a-descriptions-item label="海洋生物名">{{this.modalData.cnName}}</a-descriptions-item>
+        <a-descriptions-item label="英文名">{{this.modalData.enName}}</a-descriptions-item>
+        <a-descriptions-item label="拉丁文名">{{this.modalData.latinName}}</a-descriptions-item>
+        <a-descriptions-item label="形态描述">{{this.modalData.morphology}}</a-descriptions-item>
+        <a-descriptions-item label="生境信息">{{this.modalData.habitat}}</a-descriptions-item>
+        <a-descriptions-item label="鉴别特征">{{this.modalData.feature}}</a-descriptions-item>
+      </a-descriptions>
+      <a-divider style="margin-bottom: 32px"/>
+      <div>
+        <p style="font-weight: 700;font-size: 16px;">图片列表</p>
+        <div class="image-list">
+          <div class="image-item" v-for="(image, index) in this.modalData.imageList" :key="index">
+            <img :src="image" :alt="image.alt" />
+          </div>
+        </div>
+      </div>
+      <a-divider style="margin-bottom: 32px"/>
+      <a-descriptions title="归属类目">
+        <a-descriptions-item label="界">{{this.modalData.kingdomName}}</a-descriptions-item>
+        <a-descriptions-item label="门">{{this.modalData.phylumName}}</a-descriptions-item>
+        <a-descriptions-item label="纲">{{this.modalData.className}}</a-descriptions-item>
+        <a-descriptions-item label="目">{{this.modalData.orderName}}</a-descriptions-item>
+        <a-descriptions-item label="科">{{this.modalData.familyName}}</a-descriptions-item>
+        <a-descriptions-item label="属">{{this.modalData.genusName}}</a-descriptions-item>
+      </a-descriptions>
+      
+        <p style="font-weight: 700;font-size: 16px;color:red;cursor:pointer" @click="postError()">信息有误？</p>
+    </a-modal>
+
+
     <a-card :bordered="false" class="ant-pro-components-tag-select">
       <a-form :form="form" layout="inline">
 
@@ -82,7 +120,7 @@
     <div class="ant-pro-pages-list-projects-cardList">
       <a-list :loading="loading" :data-source="data" :grid="{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }">
         <a-list-item slot="renderItem" slot-scope="item">
-          <a-card class="ant-pro-pages-list-projects-card" hoverable>
+          <a-card @click="showModal(item.title)" class="ant-pro-pages-list-projects-card" hoverable>
             <img slot="cover" :src="item.cover" :alt="item.title" />
             <a-card-meta :title="item.title">
               <template slot="description">
@@ -166,6 +204,29 @@ export default {
         pageSize: 5,  //每页显示5条数据
         showTotal: total => `共 ${total} 条数据`,  //分页中显示总的数据
       },
+
+      
+      //在getList函数中被请求后实时赋值
+      speciesPage:{},
+
+      modalVisible:false,
+      modalData:{
+        cnName: '仓库名',
+        enName: '仓库域名',
+        latinName: '仓库管理员',
+        morphology: '审批人',
+        habitat: '生效日期',
+        feature: '仓库类型',
+        imageList:[],
+        kingdomName: '界',
+        phylumName: '门',
+        className: '纲',
+        orderName: '目',
+        familyName: '科',
+        genusName: '属'
+      },
+
+      isAdmin:false,
     }
   },
   filters: {
@@ -173,8 +234,25 @@ export default {
       return moment(date).fromNow()
     }
   },
+  created(){
+    //是否是管理员，因为修改是要判断的权限的
+    // console.log(this.$store.getters)
+    this.isAdmin=this.$store.getters.userInfo.admin
+  },
   mounted () {
-    this._getTaxonomy()
+    getTaxonomy()
+    .then(res=>{
+      console.log("看看返回值",res)
+      this.kingdomNameList = res.data.kingdomNameList.length>10?res.data.kingdomNameList.slice(0,6):res.data.kingdomNameList
+      this.phylumNameList = res.data.phylumNameList.length>10?res.data.phylumNameList.slice(0,6):res.data.phylumNameList
+      this.classNameList = res.data.classNameList.length>10?res.data.classNameList.slice(0,6):res.data.classNameList
+      this.orderNameList = res.data.orderNameList.length>10?res.data.orderNameList.slice(0,6):res.data.orderNameList
+      this.familyNameList = res.data.familyNameList.length>10?res.data.familyNameList.slice(0,6):res.data.familyNameList
+      this.genusNameList = res.data.genusNameList.length>10?res.data.genusNameList.slice(0,6):res.data.genusNameList
+      
+      this.loading=false
+      this.QueryByTaxonomy(1,8)
+    })
   },
   methods: {
 
@@ -299,7 +377,6 @@ export default {
     async QueryByTaxonomy(pageNo,pageSize){
       this.loading=true
 
-      var speciesPage;
       const taxonomyQuery={
         kingdomNameList:this.selectedKingdomName,
         phylumNameList:this.selectedPhylumName,
@@ -311,8 +388,7 @@ export default {
       console.log("看看传入的查询参数",taxonomyQuery)
       await getAllByTaxonomy(pageNo,pageSize,taxonomyQuery)
       .then(res=>{
-        speciesPage=res.data
-        console.log("看看speciesPage",speciesPage)
+        this.speciesPage=res.data
       })
       .catch(err=>{
         console.log("出错了",err)
@@ -321,13 +397,13 @@ export default {
       })
       
       //赋值分页属性
-      this.pagination.total=speciesPage.total
+      this.pagination.total=this.speciesPage.total
       this.pagination.current=pageNo
       this.pagination.pageSize=pageSize
 
       //赋值列表data
       this.data=[]
-      for (const species of speciesPage.records){
+      for (const species of this.speciesPage.records){
         var obj={
           id:species.id,
           title:species.cnName,
@@ -370,21 +446,32 @@ export default {
       this.QueryByTaxonomy(pageNo,pageSize)
     },
     
-    _getTaxonomy(){
-      getTaxonomy()
-      .then(res=>{
-        // console.log("看看返回值",res)
-        this.kingdomNameList = res.data.kingdomNameList.length>10?res.data.kingdomNameList.slice(0,10):res.data.kingdomNameList
-        this.phylumNameList = res.data.phylumNameList.length>10?res.data.phylumNameList.slice(0,15):res.data.phylumNameList
-        this.classNameList = res.data.classNameList.length>10?res.data.classNameList.slice(0,15):res.data.classNameList
-        this.orderNameList = res.data.orderNameList.length>10?res.data.orderNameList.slice(0,15):res.data.orderNameList
-        this.familyNameList = res.data.familyNameList.length>10?res.data.familyNameList.slice(0,15):res.data.familyNameList
-        this.genusNameList = res.data.genusNameList.length>10?res.data.genusNameList.slice(0,15):res.data.genusNameList
-        
-        this.loading=false
-        this.QueryByTaxonomy(1,8)
+        //展开modal显示物种详细信息
+    showModal(speciesName){
+      //先装载信息
+      const speciesList=this.speciesPage.records
+      this.modalData = speciesList.find((val) => {
+        return val.cnName === speciesName
       })
+      console.log(speciesName, this.modalData)
+      //然后开放访问
+      this.modalVisible=true
     },
+    //modal的修改按钮
+    modalModify(){
+      this.modalVisible=false
+      this.$router.push({
+        name: "EditSpecies",
+        params: {
+          speciesData: this.modalData
+        }
+      });
+    },
+    //modal的取消按钮
+    modalCancel(){
+      this.modalVisible=false
+    },
+
   }
 }
 </script>
@@ -433,5 +520,28 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.image-list {
+  display: flex; /* 让项目横向排列 */
+  flex-wrap: nowrap; /* 不允许换行 */
+  overflow-x: auto; /* 允许横向滚动 */
+}
+
+.image-item {
+  flex: 0 0 200px; /* 固定宽度 */
+  height: 200px; /* 固定高度 */
+  margin-right: 10px; /* 每个图像之间的间距 */
+  overflow: hidden; /* 避免图像溢出 */
+  border: 1px solid #ccc; /* 添加边框 */
+  border-radius: 4px; /* 圆角 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微阴影 */
+}
+
+.image-item img {
+  width: 100%; /* 图像填满容器 */
+  height: 100%; /* 图像填满容器 */
+  object-fit: cover; /* 保持图像比例，填满整个容器 */
 }
 </style>

@@ -1,3 +1,4 @@
+import user from '@/locales/lang/en-US/user'
 import request from '@/utils/request'
 
 const api = {
@@ -6,10 +7,15 @@ const api = {
   service: '/service',
   permission: '/permission',
   permissionNoPager: '/permission/no-pager',
-  orgTree: '/org/tree'
-}
+  orgTree: '/org/tree',
 
-export default api
+  EditInfo:'/userManage/editInfo',
+  deleteUser:'/userManage/delete',
+  getAllUser:'/userManage/allUser',
+  blockUser:'/userManage/block',
+  newUser:'/userManage/new',
+  getAllOrg:'/userManage/allOrganization'
+}
 
 export function getUserList (parameter) {
   return request({
@@ -18,7 +24,6 @@ export function getUserList (parameter) {
     params: parameter
   })
 }
-
 export function getRoleList (parameter) {
   return request({
     url: api.role,
@@ -26,7 +31,6 @@ export function getRoleList (parameter) {
     params: parameter
   })
 }
-
 export function getServiceList (parameter) {
   return request({
     url: api.service,
@@ -34,7 +38,6 @@ export function getServiceList (parameter) {
     params: parameter
   })
 }
-
 export function getPermissions (parameter) {
   return request({
     url: api.permissionNoPager,
@@ -42,7 +45,6 @@ export function getPermissions (parameter) {
     params: parameter
   })
 }
-
 export function getOrgTree (parameter) {
   return request({
     url: api.orgTree,
@@ -50,7 +52,6 @@ export function getOrgTree (parameter) {
     params: parameter
   })
 }
-
 // id == 0 add     post
 // id != 0 update  put
 export function saveService (parameter) {
@@ -60,11 +61,85 @@ export function saveService (parameter) {
     data: parameter
   })
 }
-
 export function saveSub (sub) {
   return request({
     url: '/sub',
     method: sub.id === 0 ? 'post' : 'put',
     data: sub
+  })
+}
+
+
+
+
+/**
+ * 修改使用者信息
+ */
+export function editInfo (param) {
+  return request({
+    url: api.EditInfo,
+    method: 'post',
+    data: param,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+
+/**
+ * 查找用户
+ */
+export function getAllUser (orgId, keyword) {
+  return request({
+    url: api.getAllUser+
+    "?orgId="+orgId+
+    "&keyword="+keyword,
+    method: 'get',
+  })
+}
+
+
+/**
+ * 封禁用户
+ */
+export function blockUser (userId) {
+  return request({
+    url: api.blockUser+"?userId="+userId,
+    method: 'post',
+  })
+}
+
+/**
+ * 软删除用户
+ */
+export function deleteUser (userId) {
+  return request({
+    url: api.deleteUser+"?userId="+userId,
+    method: 'post',
+  })
+}
+
+/**
+ * 新增用户
+ */
+export function newUser (param) {
+  return request({
+    url: api.newUser,
+    method: 'post',
+    data: param,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+/**
+ * 获得所有组织
+ */
+export function getAllOrg () {
+  return request({
+    url: api.getAllOrg,
+    method: 'get',
   })
 }

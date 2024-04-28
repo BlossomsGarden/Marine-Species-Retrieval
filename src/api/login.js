@@ -7,7 +7,6 @@ const userApi = {
 
 
   GetInfo: '/getInfo',
-  EditInfo:'/editInfo',
   UserMenuPermission: '/menu_permission',
   Logout: '/logout',
 
@@ -34,20 +33,6 @@ export function getInfo () {
   return request({
     url: userApi.GetInfo,
     method: 'get',
-  })
-}
-
-/**
- * 修改使用者信息
- */
-export function editInfo (param) {
-  return request({
-    url: userApi.EditInfo,
-    method: 'post',
-    data: param,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
 }
 

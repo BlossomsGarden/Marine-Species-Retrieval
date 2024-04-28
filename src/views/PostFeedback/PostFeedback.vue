@@ -44,6 +44,7 @@ import {newFeedback} from '@/api/feedback'
 import notification from 'ant-design-vue/es/notification'
 
 export default {
+  name:"PostFeedback",
   data () {
     return {
       form: this.$form.createForm(this)
