@@ -14,19 +14,6 @@ const speciesApi = {
 
 
 /**
- * 分页获取物种信息，以物种名称为查找对象
- */
-export function getAllSpecies(pageNo, pageSize, keyword) {
-  return request({
-    url: speciesApi.getAllSpecies +
-      '?' + 'pageNo=' + pageNo +
-      '&' + 'pageSize=' + pageSize +
-      '&' + 'keyword=' + keyword,
-    method: 'get'
-  })
-}
-
-/**
  * 分页获取物种信息，以物种归属类目为查找对象
  */
 export function getAllByTaxonomy(pageNo, pageSize, param) {
@@ -39,6 +26,21 @@ export function getAllByTaxonomy(pageNo, pageSize, param) {
     headers: { 'Content-Type': 'application/json' },
   })
 }
+
+
+/**
+ * 分页获取物种信息，以物种名称为查找对象
+ */
+export function getAllSpecies(pageNo, pageSize, keyword) {
+  return request({
+    url: speciesApi.getAllSpecies +
+      '?' + 'pageNo=' + pageNo +
+      '&' + 'pageSize=' + pageSize +
+      '&' + 'keyword=' + keyword,
+    method: 'get'
+  })
+}
+
 
 /**
  * 以字符串列表的格式获取所有分类信息

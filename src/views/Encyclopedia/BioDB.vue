@@ -4,7 +4,7 @@
       :visible="modalVisible"
       @ok="modalModify"
       ok-text="修改"
-      :ok-button-props="{ props: {disabled: !this.isAdmin} }"
+      :ok-button-props="{ props: {disabled: !this.showEditBtn} }"
       @cancel="modalCancel"
     >
       <a-descriptions title="物种信息">
@@ -37,7 +37,7 @@
         <p style="font-weight: 700;font-size: 16px;color:red;cursor:pointer" @click="postError()">信息有误？</p>
     </a-modal>
 
-    <a-input-search v-model="queryInput" style="width: 80%;" />
+    <a-input-search v-model="queryInput" style="width: 80%;" @search="getList(1,8,queryInput)" />
     <p>生僻字：㫋 䰳 鰯 䱝 鰧 鮄 鰕 鯱 鱊 鱎 鱥 鯮 鱲 䱗 鮀 鮈 鰋 鰕 鱵 䱻 魾 鮡 鮠 䱀 鰤 魣 鰶 䳭 鵙 鸊 鷉 鵰 鳽 䕹 䓫 䓮 䕅 㰀 䉡 㼎 䓞 簕</p>
 
     <div class="ant-pro-pages-list-projects-cardList">
@@ -102,7 +102,7 @@ export default {
   },
   data () {
     return {
-      isAdmin:false,
+      showEditBtn:false,
 
       //在getList函数中被请求后实时赋值
       speciesPage:{},
@@ -148,7 +148,7 @@ export default {
   created(){
     //是否是管理员，因为修改是要判断的权限的
     // console.log(this.$store.getters)
-    this.isAdmin=this.$store.getters.userInfo.admin
+    this.showEditBtn=this.$store.getters.userInfo.organizationId===1 || this.$store.getters.userInfo.organizationId===3
   },
   mounted () {
     this.getList(1,8,this.queryInput)

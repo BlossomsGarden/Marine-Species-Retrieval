@@ -2,11 +2,11 @@
   <page-header-wrapper>
     <a-card :bordered="false">
       <a-row>
-        <a-col :sm="16" :xs="24">
+        <a-col :sm="12" :xs="24">
           <info title="反馈总数" :value="`${activities.length}个`" :bordered="true" />
         </a-col>
-        <a-col :sm="16" :xs="24">
-          <info title="本周反馈" value="1个" :bordered="true" />
+        <a-col :sm="12" :xs="24">
+          <info title="本周反馈" value="2个" :bordered="true" />
         </a-col>
       </a-row>
     </a-card>

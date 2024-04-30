@@ -18,13 +18,13 @@
     <template v-slot:extraContent>
       <div class="extra-content">
         <div class="stat-item">
-          <a-statistic title="归属组织" value="管理员" />
+          <a-statistic title="归属组织" :value="user.orgName" />
         </div>
         <div class="stat-item">
           <a-statistic title="新增生物信息" value="200" />
         </div>
         <div class="stat-item">
-          <a-statistic title="注册时间" value="2024-01-01" />
+          <a-statistic title="注册时间" :value="user.createTime" />
         </div>
       </div>
     </template>
@@ -150,8 +150,9 @@
           
           
           <a-card 
+            v-if="!this.user.admin"
             :loading="loading" 
-            :title="user.admin?'用户反馈':'我的反馈'" 
+            title="我的反馈" 
             :bordered="false"
           >
             <a-list>
@@ -184,6 +185,7 @@ import {getMyFeedback,getAllFeedback} from '@/api/feedback'
 import {uploadImage} from '@/api/utility'
 import { notification } from 'ant-design-vue';
 import {getInfo} from '@/api/login'
+import {getAllOrg} from '@/api/manage'
 import {editInfo} from '@/api/manage'
 import { baseMixin } from '@/store/app-mixin'
 import storage from 'store'
@@ -286,6 +288,9 @@ export default {
         autoCropHeight: 200,
         fixedBox: true
       },
+
+      orgList:[],
+      user:{},
     }
   },
   computed: {
@@ -294,15 +299,7 @@ export default {
     }),
   },
   async created () {
-    this.onLoad()
-
-    const getInfoRes = await getInfo()
-    this.user = getInfoRes.data
-    this.avatarUrl = this.user.avatarUrl
-    this.currentUser = {
-      name: this.user.name,
-      avatarUrl: this.user.avatarUrl
-    }
+    await this.onLoad()
     
     this.getProjects()
     this.getActivity()
@@ -327,10 +324,7 @@ export default {
 
     getActivity () {
       if(this.user.admin){
-        getAllFeedback()
-        .then(res=>{
-          this.activities=res.data
-        })
+        // console.log("什么也不做")
       }
       else{
         getMyFeedback()
@@ -367,17 +361,34 @@ export default {
       })
     },
 
+    async onLoad(){
+      await getInfo()
+      .then(res=>{
+        this.option.img=res.data.avatarUrl
+        this.form={
+          name:res.data.name,
+          description:res.data.description,
+          email:res.data.email,
+          avatarUrl:res.data.avatarUrl,
+        }
+        this.user = res.data
+        this.avatarUrl = this.user.avatarUrl
+        this.currentUser = {
+          name: this.user.name,
+          avatarUrl: this.user.avatarUrl
+        }
+      })
 
-
-        async onLoad(){
-      const getInfoRes = await getInfo()
-      this.option.img=getInfoRes.data.avatarUrl
-      this.form={
-        name:getInfoRes.data.name,
-        description:getInfoRes.data.description,
-        email:getInfoRes.data.email,
-        avatarUrl:getInfoRes.data.avatarUrl,
-      }
+      await getAllOrg()
+      .then(res=>{
+        //你1是管理员，这个就别要了
+        this.orgList=res.data
+        this.user={
+          ...this.user,
+          //-1是因为索引与id差1
+          orgName:this.orgList[this.user.organizationId-1].name
+        }
+      })
     },
 
     save(){

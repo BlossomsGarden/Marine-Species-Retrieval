@@ -87,13 +87,13 @@ const wholeMenuInfo=[
     name: 'Analysis',
     parentId: 1,
     id: 11,
-    meta: { title: 'Analysis', show:true },
+    meta: { title: '数据看板', show:true },
     component:'Analysis'
   },{
     name: 'Workplace',
     parentId: 1,
     id: 12,
-    meta: { title: 'Workplace', show:true },
+    meta: { title: '工作台', show:true },
     component:'Workplace'
   },
 

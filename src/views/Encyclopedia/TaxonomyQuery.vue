@@ -4,7 +4,7 @@
       :visible="modalVisible"
       @ok="modalModify"
       ok-text="修改"
-      :ok-button-props="{ props: {disabled: !this.isAdmin} }"
+      :ok-button-props="{ props: {disabled: !this.showEditBtn} }"
       @cancel="modalCancel"
     >
       <a-descriptions title="物种信息">
@@ -226,7 +226,7 @@ export default {
         genusName: '属'
       },
 
-      isAdmin:false,
+      showEditBtn:false,
     }
   },
   filters: {
@@ -237,7 +237,7 @@ export default {
   created(){
     //是否是管理员，因为修改是要判断的权限的
     // console.log(this.$store.getters)
-    this.isAdmin=this.$store.getters.userInfo.admin
+    this.showEditBtn=this.$store.getters.userInfo.organizationId===1 || this.$store.getters.userInfo.organizationId===3
   },
   mounted () {
     getTaxonomy()
