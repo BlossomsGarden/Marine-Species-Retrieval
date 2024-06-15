@@ -179,8 +179,7 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { Radar } from '@/components'
-import {getMyFeedback,getAllFeedback} from '@/api/feedback'
+import {getMyFeedback} from '@/api/feedback'
 
 import {uploadImage} from '@/api/utility'
 import { notification } from 'ant-design-vue';
@@ -190,14 +189,12 @@ import {editInfo} from '@/api/manage'
 import { baseMixin } from '@/store/app-mixin'
 import storage from 'store'
 
-const DataSet = require('@antv/data-set')
 
 export default {
   name: 'Workplace',
   mixins: [baseMixin],
   components: {
     PageHeaderWrapper,
-    Radar
   },
   data () {
     return {
@@ -205,51 +202,9 @@ export default {
       avatarUrl: '',
       user: {},
 
-      projects: [],
       loading: true,
-      radarLoading: true,
       activities: [],
-      teams: [],
 
-      // data
-      axis1Opts: {
-        dataKey: 'item',
-        line: null,
-        tickLine: null,
-        grid: {
-          lineStyle: {
-            lineDash: null
-          },
-          hideFirstLine: false
-        }
-      },
-      axis2Opts: {
-        dataKey: 'score',
-        line: null,
-        tickLine: null,
-        grid: {
-          type: 'polygon',
-          lineStyle: {
-            lineDash: null
-          }
-        }
-      },
-      scale: [
-        {
-          dataKey: 'score',
-          min: 0,
-          max: 80
-        }
-      ],
-      axisData: [
-        { item: '引用', a: 70, b: 30, c: 40 },
-        { item: '口碑', a: 60, b: 70, c: 40 },
-        { item: '产量', a: 50, b: 60, c: 40 },
-        { item: '贡献', a: 40, b: 50, c: 40 },
-        { item: '热度', a: 60, b: 70, c: 40 },
-        { item: '引用', a: 70, b: 50, c: 40 }
-      ],
-      radarData: [],
       currentUser:{},
 
       // cropper
@@ -293,6 +248,7 @@ export default {
       user:{},
     }
   },
+
   computed: {
     ...mapState({
       welcome: state => state.user.welcome
@@ -301,10 +257,7 @@ export default {
   async created () {
     await this.onLoad()
     
-    this.getProjects()
     this.getActivity()
-    this.getTeams()
-    this.initRadar()
   },
   methods: {
     navTo(dst){
@@ -313,13 +266,6 @@ export default {
         name: dst,
         params: {}
       });
-    },
-
-    getProjects () {
-      this.$http.get('/list/search/projects').then(res => {
-        this.projects = res.result && res.result.data
-        this.loading = false
-      })
     },
 
     getActivity () {
@@ -339,27 +285,7 @@ export default {
         })
       }
     },
-    getTeams () {
-      this.$http.get('/workplace/teams').then(res => {
-        this.teams = res.result
-      })
-    },
-    initRadar () {
-      this.radarLoading = true
 
-      this.$http.get('/workplace/radar').then(res => {
-        const dv = new DataSet.View().source(res.result)
-        dv.transform({
-          type: 'fold',
-          fields: ['个人', '团队', '部门'],
-          key: 'user',
-          value: 'score'
-        })
-
-        this.radarData = dv.rows
-        this.radarLoading = false
-      })
-    },
 
     async onLoad(){
       await getInfo()
@@ -389,6 +315,8 @@ export default {
           orgName:this.orgList[this.user.organizationId-1].name
         }
       })
+
+      this.loading=false
     },
 
     save(){

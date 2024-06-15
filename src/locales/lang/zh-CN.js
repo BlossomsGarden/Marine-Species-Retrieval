@@ -21,7 +21,7 @@ export default {
 
   'layouts.usermenu.dialog.title': '信息',
   'layouts.usermenu.dialog.content': '您确定要注销吗？',
-  'layouts.userLayout.title': '2024数据库课程设计项目---2152189 汪林辉',
+  'layouts.userLayout.title': '2024数据库课程设计项目 --- BlossomsGarden',
   ...components,
   ...global,
   ...menu,
