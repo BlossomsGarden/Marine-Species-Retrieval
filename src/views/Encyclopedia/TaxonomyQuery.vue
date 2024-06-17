@@ -442,7 +442,6 @@ export default {
     handlePageChange(pageNo, pageSize){
       this.loading=true
       this.pagination.pageNo=1
-      t
       this.QueryByTaxonomy(pageNo,pageSize)
     },
     

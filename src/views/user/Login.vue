@@ -159,16 +159,18 @@ export default {
       } = this
 
       state.loginBtn = true
+      
+      validateFields({ force: false }, (err, values) => {
+        const loginParams = { ...values }
+        
+        if (customActiveKey === 'tab1'){
+          loginParams.name = values.username_user
+          loginParams.password = values.password_user
+          // console.log("你是用户登录",loginParams)
 
-      validateFields({ force: true }, (err, values) => {
-        if (!err) {
-          const loginParams = { ...values }
-          
-          if (customActiveKey === 'tab1'){
-            loginParams.name = values.username_user
-            loginParams.password = values.password_user
-            // console.log("你是用户登录",loginParams)
-
+          if(loginParams.name!='' && loginParams.password!=null &&
+            loginParams.name!=null && loginParams.password!=''
+          ){
             userLogin(loginParams)
             .then((res) => {
               if(res.success){
@@ -221,10 +223,20 @@ export default {
               state.loginBtn = false
             })
           }
-          else if(customActiveKey === 'tab2'){
-            loginParams.name = values.username_admin
-            loginParams.password = values.password_admin
-            // console.log("你是管理员登录",loginParams)
+          else{
+            setTimeout(() => {
+              state.loginBtn = false
+            }, 600)
+          }
+        }
+        else if(customActiveKey === 'tab2'){
+          loginParams.name = values.username_admin
+          loginParams.password = values.password_admin
+          // console.log("你是管理员登录",loginParams)
+          
+          if(loginParams.name!='' && loginParams.password!=null &&
+            loginParams.name!=null && loginParams.password!=''
+          ){
             adminLogin(loginParams)
             .then((res) => {
               if(res.success){
@@ -272,14 +284,14 @@ export default {
               })
             })
             .finally(() => {
-              state.loginBtn = false
-            })
-          }
-        } 
-        else {
-          setTimeout(() => {
             state.loginBtn = false
-          }, 600)
+          })
+          }
+          else{
+            setTimeout(() => {
+              state.loginBtn = false
+            }, 600)
+          }
         }
       })
     },

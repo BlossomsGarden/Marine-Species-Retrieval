@@ -329,6 +329,7 @@ export default {
       editInfo(this.form)
       .then(res=>{
         console.log("看看修改信息的返回值",res)
+        notification.success({message:"修改成功！"})
       })
       
       storage.set('name', this.form.name),
