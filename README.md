@@ -1,103 +1,55 @@
-English | [简体中文](./README.zh-CN.md)
 
-<h1 align="center">Ant Design Vue Pro</h1>
-<div align="center">
-An out-of-box UI solution for enterprise applications as a Vue boilerplate. based on  <a href="https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/" target="_blank">Ant Design of Vue</a>
-</div>
-
-<div align="center">
-
-[![License](https://img.shields.io/npm/l/package.json.svg?style=flat)](https://github.com/vueComponent/ant-design-vue-pro/blob/master/LICENSE)
-[![Release](https://img.shields.io/github/release/vueComponent/ant-design-vue-pro.svg?style=flat)](https://github.com/vueComponent/ant-design-vue-pro/releases/latest)
-[![Support Vue Version](https://img.shields.io/badge/Support-Vue2-green?style=flat)](https://github.com/vueComponent/ant-design-vue-pro/releases/latest)
-[![Travis branch](https://travis-ci.org/vueComponent/ant-design-vue-pro.svg?branch=master)](https://travis-ci.org/vueComponent/ant-design-vue-pro)
-
-</div>
-
-- Preview: https://preview.pro.antdv.com
-- Home Page: https://pro.antdv.com
-- Documentation: https://pro.antdv.com/docs/getting-started
-- ChangeLog: https://pro.antdv.com/docs/changelog
-- FAQ: https://pro.antdv.com/docs/faq
-- Vue3 ProLayout: https://github.com/vueComponent/pro-layout
-
-Overview
+💿 Overview
 ----
+本项目是2024年春数据库课程设计，基于开源的 [Ant-Design-Vue-Pro](https://github.com/vueComponent/ant-design-vue-pro
+) 项目开发，配合Marine-Species-Retrieval-Backend中的后端代码以及数据库架构使用。fork 这个项目主要是想学一下 vue 中路由配置和用户权限的动态管理。原 Ant-Design-Vue-Pro 项目已搭建的十分完备，只是缺乏后端代码。该版本根据自己的理解修改了小部分参数并添加了后端（关联仓库 [Marine-Species-Retrieval-Backend](https://github.com/BlossomsGarden/Marine-Species-Retrieval-Backend)），也是方便自己之后需要搭建网页的情景。
 
-![dashboard](https://static-2.loacg.com/open/static/github/SP1.png)
 
-### Env and dependencies
+管理员视图展示
+
+<img src="https://github.com/BlossomsGarden/Marine-Species-Retrieval-DB/assets/110208412/95b6e0ff-3878-4015-a097-6ba7f996da86" width="600px">
+
+
+用户视图展示
+
+<img src="https://github.com/BlossomsGarden/Marine-Species-Retrieval-DB/assets/110208412/b7706413-cb14-4507-82ac-5ff97d30b18d" width="600px">
+
+
+
+👨‍💻 环境和依赖
+----
 
 - node
 - yarn
 - webpack
 - eslint
 - @vue/cli
-- [ant-design-vue@1.x](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 
-- [vue-cropper](https://github.com/xyxiao001/vue-cropper) - Picture edit
-- [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - AntV G2
-- [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - Antv/G2 of Vue
-
-> Note:  [Yarn](https://yarnpkg.com/) package management is recommended, the exact same version loaded with the demo site of this project (yarn.lock) . but you can also use npm
+- [ant-design-vue@1.x](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
+- [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
+- [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
+- [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
 
 
-### Project setup
 
-- Clone repo
-```bash
-git clone https://github.com/vueComponent/ant-design-vue-pro.git
-cd ant-design-vue-pro
-```
+🔧 运行
+----
 
-- Install dependencies
+由于 fork 的原项目 Ant-Design-Vue-Pro 没有对依赖进行强制的版本控制，采用非 yarn 包管理进行引入时，可能由于库已经升级版本而引入了新版本所导致的问题。所以还是推荐使用者下载 [Yarn](https://yarnpkg.com/) 包管理工具，这样可以获取与如上演示时完全相同的依赖版本 (依据yarn.lock)
+
+- 安装依赖
 ```
 yarn install
 ```
 
-- Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
-- Compiles and minifies for production
+- 编译项目
 ```
 yarn run build
 ```
 
-- Lints and fixes files
+- 开发模式运行
 ```
-yarn run lint
+yarn run serve
 ```
 
+执行完毕后依据命令行给出的提示，打开浏览器输入端口号即可访问网页~
 
-### Other
-
-- **IMPORTANT : Issue feedback !! when opening Issue read [Issue / PR Contributing](https://github.com/vueComponent/ant-design-vue-pro/issues/90)**
-
-- [Vue-cli3](https://cli.vuejs.org/guide/) used by the project.
-
-- Disable Eslint (not recommended): remove `eslintConfig`  field in `package.json`  and `vue.config.js` field `lintOnSave: false`
-
-- Load on Demand `/src/main.js` L14, in `import './core/lazy_use'`, `import './core/use''`. more [load-on-demand.md](./docs/load-on-demand.md)
-
-- Customize Theme:  [Custom Theme Config (@kokoroli)](https://github.com/kokoroli/antd-awesome/blob/master/docs/Ant_Design_%E6%A0%B7%E5%BC%8F%E8%A6%86%E7%9B%96.md)
-
-- I18n: [locales (@musnow)](./src/locales/index.js)
-
-- Production env `mock` is disabled. use `src/mock/index.js`
-
-- pls use `release` version
-
-## Browsers support
-
-Modern browsers and IE10.
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
-| --- | --- | --- | --- | --- |
-| IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
-
-
-## Contributors
-
-This project exists thanks to all the people who contribute. 
-<a href="https://github.com/vueComponent/ant-design-vue-pro/graphs/contributors"><img src="https://opencollective.com/ant-design-pro-vue/contributors.svg?width=890&button=false" /></a>
